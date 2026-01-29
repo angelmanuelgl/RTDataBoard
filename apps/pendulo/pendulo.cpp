@@ -42,17 +42,17 @@ int main( ){
     // Panel para el angulo Theta(t)
     Panel panelTheta({350, 200}, 20, sf::Color(25, 25, 25), Tema::yellow);
     panelTheta.positionAbsoluta(Ubicacion::CentroDer, window, margenVentana);
-    GraficaTiempo graphTheta(100, Tema::yellow, "Angulo Theta(t)");
+    GraficaTiempo graphTheta(Tema::yellow, "Angulo Theta(t)");
 
     // Panel para velocidad angular omega(t)
     Panel panelOmega({350, 200}, 20, sf::Color(25, 25, 25), Tema::yellow);
     panelOmega.positionRelativa(RelativoA::Arriba, panelTheta, espaciado);
-    GraficaTiempo graphOmega(100, Tema::yellow, "Velocidad Omega(t)");
+    GraficaTiempo graphOmega(Tema::yellow, "Velocidad Omega(t)");
 
     // panel para el Espacio de Fase (Theta vs Omega)
     Panel panelFase({350, 200}, 20, sf::Color(25, 25, 25), Tema::green);
     panelFase.positionRelativa(RelativoA::Abajo, panelTheta, espaciado);
-    GraficaEspacioFase graphFase(100, Tema::green, "Fase (Theta, Omega)");
+    GraficaEspacioFase graphFase(Tema::green, "Fase (Theta, Omega)");
 
     // --- Control del tiempo ---
     sf::Clock clock;

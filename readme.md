@@ -15,9 +15,45 @@ Está diseñada para integrarse fácilmente en simulaciones complejas, permitien
 * Compilador de C++ (GCC/MinGW recomendado).
 * [SFML](https://www.sfml-dev.org/) (Simple and Fast Multimedia Library) instalada y configurada.
 
-## ompilación
+## 📂 Estructura del Proyecto
+
+* `lib_grafica/`: Núcleo de la librería (Clases de geometría y renderizado).
+* `apps/`: Experimentos y simulaciones que utilizan la librería.
+* `assets/`: Recursos compartidos (Fuentes como Roboto, archivos de configuración).
+* `build/`: Directorio para ejecutables y archivos objeto.
+
+
+
+## 🚀 Instrucciones de Compilación
+
+### Compilar la Libreria (Objetos)
+Para no recompilar la librería entera cada vez que hagas un cambio en tus simulaciones, primero genera los archivos objeto:
+
+```bash
+g++ -c lib_grafica/src/Geometria.cpp -I lib_grafica/include -o build/Geometria.o
+g++ -c lib_grafica/src/Graficas.cpp -I lib_grafica/include -o build/Graficas.o
+```
+
+### Compilar una Simulación Específica
+Una vez generados los .o, puedes compilar cualquier aplicación de la carpeta apps/ de forma rápida:
+```bash
+g++ apps/hormigas/main_hormigas.cpp *.o -I lib_grafica/include -o build/hormigas.exe -lsfml-graphics -lsfml-window -lsfml-system
+g++ apps/hormigas/main_hormigas.cpp build/Geometria.o build/Graficas.o -I lib_grafica/include -o build/hormigas.exe -lsfml-graphics -lsfml-window -lsfml-system
+```
+luego compilar el proyecto
+HORMIGAS:
+```bash
+g++ apps/hormigas/main.cpp build/Geometria.o build/Graficas.o -I lib_grafica/include -o build/hormigas.exe -lsfml-graphics -lsfml-window -lsfml-system
+```
+PENDULO: 
+```bash
+g++ apps/pendulo/pendulo.cpp build/Geometria.o build/Graficas.o -I lib_grafica/include -o build/pendulo.exe -lsfml-graphics -lsfml-window -lsfml-system
+```
+
+## compilación (version anterior)
+
 Para compilar el proyecto manualmente, utiliza el siguiente comando:
 
 ```bash
-g++ main.cpp src/Geometria.cpp src/Graficas.cpp -I include -o hormigas.exe -lsfml-graphics -lsfml-window -lsfml-system
-g++ pendulo.cpp src/Geometria.cpp src/Graficas.cpp -I include -o pendulo.exe -lsfml-graphics -lsfml-window -lsfml-system
+g++ apps/hormigas/main_hormigas.cpp lib_grafica/src/*.cpp -I lib_grafica/include -o build/hormigas.exe -lsfml-graphics -lsfml-window -lsfml-system
+```

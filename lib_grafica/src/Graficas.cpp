@@ -17,9 +17,15 @@
     GRAFICAS BASE
     aquiv an lso metodos que deberian tener todas las graficas en comun
 */
-GraficaBase::GraficaBase(unsigned int maxPts, sf::Color color, std::string t, const std::string& ruta_fuente) 
-    : maxPoints(maxPts), lineaResaltado(color), titulo(t ){ 
+GraficaBase::GraficaBase(unsigned int maxPts, sf::Color color, std::string t ) 
+    : maxPoints(maxPts), lineaResaltado(color), titulo(t) { 
+    
+
+    // --- la fuente sera la misma por ahora ---
+    //TODO agregar mas fuentes y una funcion para cambiar fuentes
+    const std::string& ruta_fuente = "assets/fonts/Roboto.ttf";
     if( !font.loadFromFile(ruta_fuente) ){  /* error */ }
+    
 
     // medidas
     tamanoTitulo = 12.f;
@@ -236,10 +242,11 @@ void GraficaBase::draw(sf::RenderWindow& window, Panel& parent ){
    el eje x es el tiempo y vamos agtregando datos
    se supone que los datos se van agregando en tiempo real
 */
-GraficaTiempo::GraficaTiempo(unsigned int maxPts, sf::Color color, std::string t, const std::string& ruta_fuente)
-    : GraficaBase(maxPts, color, t, ruta_fuente ){ 
-        ponerSobreado(true);
-    }
+GraficaTiempo::GraficaTiempo( sf::Color color, std::string t)
+    :GraficaBase(500, color, t)
+{    
+    ponerSobreado(true);
+}
 
 void GraficaTiempo::addValue(float val ){
     // x es el tiempo (podira ser un contador o segundos)
@@ -286,8 +293,9 @@ void GraficaTiempo::recalcularExtremos(void){
     GRAFICAS DE ESPACIO FASE
     agrega pares
 */
-GraficaEspacioFase::GraficaEspacioFase(unsigned int maxPts, sf::Color color, std::string t, const std::string& ruta_fuente)
-    : GraficaBase(maxPts, color, t, ruta_fuente ){ 
+GraficaEspacioFase::GraficaEspacioFase( sf::Color color, std::string t)    
+    :GraficaBase(500, color, t)
+{    
     nombreEjeX = "X";
     nombreEjeY = "Y";
     ponerDesvanecido(true);

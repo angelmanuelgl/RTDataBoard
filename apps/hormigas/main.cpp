@@ -54,28 +54,28 @@ int main( ){
     // --- Guerreras G(t) ----
     Panel panelG({350, 200}, 20, Tema::Panel, Tema::Guerreras);
     panelG.positionAbsoluta(Ubicacion::CentroDer, window, margenVentana);
-    GraficaTiempo graphG(100, Tema::Guerreras, "Poblacion de Guerreras G(t)");
+    GraficaTiempo graphG(Tema::Guerreras, "Poblacion de Guerreras G(t)");
 
     // --- Recolectoras R(t) ---
     Panel panelR({350, 200}, 20, Tema::Panel, Tema::Recolectoras);
     panelR.positionRelativa(RelativoA::Arriba, panelG, espaciado);
-    GraficaTiempo graphR(100, Tema::Recolectoras, "Poblacion de Recolectoras R(t)");
+    GraficaTiempo graphR(Tema::Recolectoras, "Poblacion de Recolectoras R(t)");
 
     // --- Obreras O(t) ---
     Panel panelO({350, 200}, 20, Tema::Panel, Tema::Obreras);
     panelO.positionRelativa(RelativoA::Abajo, panelG, espaciado);
-    GraficaTiempo graphO(100, Tema::Obreras, "Poblacion de Obreras O(t)");
+    GraficaTiempo graphO(Tema::Obreras, "Poblacion de Obreras O(t)");
     //graphO.ponerSobreado(false);
 
     // --- boceto de fase ---
     Panel nuevoPanel({350, 200}, 20, Tema::Panel, Tema::Color1);
     nuevoPanel.positionAbsoluta(Ubicacion::CentroIzq, window, margenVentana);
-    GraficaEspacioFase nuevaGrafica(100, Tema::Color1, "(Obreras, Guerreras)");
+    GraficaEspacioFase nuevaGrafica(Tema::Color1, "(Obreras, Guerreras)");
 
     // --- boceto de fase ---
     Panel nuevoPanel2({350, 200}, 20, Tema::Panel, Tema::Color2);
     nuevoPanel2.positionRelativa(RelativoA::Arriba  , nuevoPanel, espaciado);
-    GraficaEspacioFase nuevaGrafica2(100, Tema::Color2, "(Obreras, Recolectoras)");
+    GraficaEspacioFase nuevaGrafica2(Tema::Color2, "(Obreras, Recolectoras)");
 
 
     // --- IMPORTANTE: control del tiempo --
@@ -122,7 +122,7 @@ int main( ){
         // --- RENDERIZADO ---
         window.clear(sf::Color(15, 15, 15)); // Fondo oscuro tipo Sci-Fi
 
-        // Dibujar paneles y sus gráficas internas
+        // Dibujar paneles y sus graficas internas
         panelG.draw(window);
         graphG.draw(window, panelG);
 

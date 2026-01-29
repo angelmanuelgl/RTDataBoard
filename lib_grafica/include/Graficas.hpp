@@ -49,7 +49,7 @@ protected:
     Limites lim;
 
 public:
-    GraficaBase(unsigned int maxPts, sf::Color color, std::string t, const std::string& ruta_fuente = "assets/fonts/Roboto.ttf");
+    GraficaBase(unsigned int maxPts, sf::Color color, std::string t);
 
     virtual ~GraficaBase() {}
 
@@ -65,6 +65,7 @@ public:
     void setTamanoTitulo(float tam) { tamanoTitulo = tam; titulo_texto.setCharacterSize((unsigned int)tamanoTitulo); }
     void configurarEjes(std::string nx, std::string ux, std::string ny, std::string uy) { nombreEjeX = nx; unidadEjeX = ux; nombreEjeY = ny; unidadEjeY = uy; }
     void configurarMarcas(int mx, int my) { numMarcasX = mx; numMarcasY = my; }
+    void configurarMaxPoints(int mp) { maxPoints = mp; }
     //
     void ponerSobreado( bool s ){ sombreado = s;}
     void ponerDesvanecido( bool s ){ desvanece = s;}
@@ -79,7 +80,7 @@ private:
     float contadorSegundos;
     
 public:
-    GraficaTiempo(unsigned int maxPts, sf::Color color, std::string t, const std::string& ruta_fuente = "assets/fonts/Roboto.ttf");
+    GraficaTiempo(sf::Color color, std::string t);
     // --- datos ---
     void recalcularExtremos(void) override;
     void addValue(float val);
@@ -90,7 +91,7 @@ private:
     //
 
 public:
-    GraficaEspacioFase(unsigned int maxPts, sf::Color color, std::string t, const std::string& ruta_fuente = "assets/fonts/Roboto.ttf");
+    GraficaEspacioFase(sf::Color color, std::string t);
     // --- datos ---
     void recalcularExtremos(void) override;
     void addValue(float x, float y);

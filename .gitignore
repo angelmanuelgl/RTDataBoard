@@ -1,9 +1,15 @@
 # ejecutables
 *.exe
+build/
+# archivos objeto
 *.o
+*.obj
 
 # configuracion local
 .vscode/
 
 # archivos temporales o antiguos
-notas.txt
+
+
+
+
