@@ -38,10 +38,11 @@ private:
     // elementos 
     RectanguloRedondeado elMarco;
     
+    std::unique_ptr<Objeto> contenido;
+    
     // el panel
     sf::Transform mytransform; 
     sf::Vector2f pos_actual;
-    std::unique_ptr<Objeto> contenido;
     
     // poscionar //todo: hacer una clase que contenga todos los paneles // para tener medidas iguales para todos
     float espaciado = 15.f;

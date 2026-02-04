@@ -88,7 +88,7 @@ void Panel::positionRelativa(RelativoA rel, const Panel& other){
     }
     setPosition(x, y);
 }
-
+ 
 sf::RenderStates Panel::getInternalState() const {
     sf::RenderStates states;
     states.transform = mytransform;

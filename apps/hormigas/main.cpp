@@ -16,36 +16,38 @@
 #include <algorithm>
 
 #include "Libreria.hpp"
-
+#include "GraficoCircular.hpp"
 
 
 int main( ){
     // --- cargar colores ---
+    std::cout << "1. Cargando temas..." << std::endl;
     Tema::cargar("assets/config/colores.txt");
 
     // --- configurar ventana ---
+   std::cout << "2. Inicializando ventana..." << std::endl;
     sf::RenderWindow window;
-    Sistema::inicializarVentana(window, "Simulación de Hormigas - Tesis");
+    Sistema::inicializarVentana(window, "Simulacion de Hormigas - Tesis");
 
 
     // --- parametros para simular lo de hormigas ---
 
     // poblaciones iniciales
-    float O = 100.0f; // Obreras
-    float G = 20.0f;  // Guerreras
-    float R = 10.0f;  // Recolectoras
+    float O = 30.0f; // Obreras
+    float G = 30.0f;  // Guerreras
+    float R = 40.0f;  // Recolectoras
 
     // transisciones y etc
-    const float bO = 0.102f;     // natalidad obreras
-    const float betaOG = 0.1f;   // transición O->G
-    const float betaGR = 0.1f;   // transición G->R
-    const float betaRG = 0.08f;  // transición R->G
-    const float kG = 50.0f;      // saturacion Guerreras
-    const float kR = 40.0f;      // saturacion Recolectoras
+    const float bO = 0.05f;     // natalidad obreras
+    const float betaOG = 2.1f;   // transicion O->G
+    const float betaGR = 0.9f;   // transicion G->R
+    const float betaRG = 0.08f;  // transicion R->G
+    const float kG = 80.0f;      // saturacion Guerreras
+    const float kR = 80.0f;      // saturacion Recolectoras
     const float dG = 0.02f;      // muerte Guerreras
-    const float dR = 0.05f;      // muerte Recolectoras
+    const float dR = 0.04f;      // muerte Recolectoras
 
-
+    std::cout << "3. Creando paneles..." << std::endl;
     // --- paneles----
     Panel panelG(window, Tema::c("guerreras"), 4,3 );
     panelG.positionAbsoluta(Ubicacion::ArribaDer);
@@ -56,31 +58,51 @@ int main( ){
     Panel panelO(window,  Tema::c("obreras"), 4,3 );
     panelO.positionRelativa(RelativoA::Abajo, panelR);
 
-    Panel panelf1(window, Tema::c("color1"), 3, 2);
+    Panel panelf1(window, Tema::c("color1"), 5, 4);
     panelf1.positionAbsoluta(Ubicacion::ArribaIzq);
 
-    Panel panelf2(window,  Tema::c("color2"), 3, 2);
+    Panel panelf2(window,  Tema::c("color2"), 5, 4);
     panelf2.positionRelativa(RelativoA::Abajo  , panelf1);
 
+    Panel panelf3(window,  Tema::c("color3"), 5, 4);
+    panelf3.positionRelativa(RelativoA::Abajo  , panelf2);
 
+    Panel panelCirc(window,  Tema::c("rojo"), 5, 4);
+    panelCirc.positionRelativa(RelativoA::Abajo, panelf3);
+
+    std::cout << "4. Creando graficas..." << std::endl;
+    
+    
     // --- graficas respecto a tiempo y respecot a fase ---
     auto* graphG = panelG.crearContenido<GraficaTiempo>(Tema::c("guerreras"), "Poblacion de Guerreras G(t)");
- 
+
     auto* graphR = panelR.crearContenido<GraficaTiempo>(Tema::c("recolectoras"), "Poblacion de Recolectoras R(t)");
-   
     auto* graphO = panelO.crearContenido<GraficaTiempo>(Tema::c("obreras"), "Poblacion de Obreras O(t)");
-   
+    
+
     auto* fase1 = panelf1.crearContenido<GraficaEspacioFase>(Tema::c("color1"), "(Obreras, Guerreras)");
-  
     auto* fase2 = panelf2.crearContenido<GraficaEspacioFase>(Tema::c("color2"), "(Obreras, Recolectoras)");
+    auto* fase3 = panelf3.crearContenido<GraficaEspacioFase>(Tema::c("color3"), "(Recolectoras, Guerreras)");
+    
+    fase1 -> configurarMaxPoints(10000);
+    fase2 -> configurarMaxPoints(10000);  
+    fase3 -> configurarMaxPoints(10000);
+
+
+    std::vector<sf::Color> colores = { Tema::c("obreras"), Tema::c("guerreras"), Tema::c("recolectoras") };
+    auto* circular = panelCirc.crearContenido<GraficoCircular>();
+    circular -> personalizarColores( colores );
+
 
 
     // --- IMPORTANTE: control del tiempo --
     //  (Paso fijo de 0.1s)
     sf::Clock clock;
     sf::Time accumulator = sf::Time::Zero;
-    sf::Time ups = sf::seconds(0.1f); // Update por segundo
+    sf::Time ups = sf::seconds(0.01f); // Update por segundo
+    // ups = sf::seconds(0.5f); // Update por segundo
 
+    std::cout << "5. Inicializando simulacion   ..." << std::endl;
     while( window.isOpen() ){
         sf::Event event;
         while( window.pollEvent(event) ){
@@ -106,12 +128,19 @@ int main( ){
             G += dG_dt * dt_val;
             R += dR_dt * dt_val;
 
+
+           
             // agregar datos a graficas
+            graphO -> addValue(O);
             graphG -> addValue(G);
             graphR -> addValue(R);
-            graphO -> addValue(O);
+
             fase1 -> addValue(O,G);
             fase2 -> addValue(O,R);
+            fase3 -> addValue(R,G);
+
+            circular -> addValues( {O, G, R} );
+
 
             accumulator -= ups;
         }
@@ -125,6 +154,9 @@ int main( ){
         panelO.draw();
         panelf2.draw();
         panelf1.draw();
+        panelf3.draw();
+
+        panelCirc.draw();
 
         window.display();
     }

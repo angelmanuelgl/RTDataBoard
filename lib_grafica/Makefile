@@ -32,8 +32,11 @@ directories:
 $(LIBRARY): $(OBJECTS)
 	ar rcs $@ $^
 
+# Busca todos los headers
+HEADERS = $(wildcard include/*.hpp)
+
 # Compila cada .cpp individualmente solo si ha sido modificado
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp $(HEADERS)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 # Limpia los archivos generados para recompilar desde cero

@@ -77,7 +77,6 @@ public:
     void ponerDesvanecido( bool s ){ desvanece = s;}
     
     // dibujar
-    sf::Vector2f mapearPunto(sf::Vector2f p, float paddingL, float offsetTop, float graphWidth, float graphHeight );
     void dibujarContenido(sf::RenderWindow& window, sf::RenderStates states, float paddingL, float offsetTop, float graphWidth, float graphHeight);
     void draw(sf::RenderWindow& window, sf::RenderStates states, sf::Vector2f pSize);
 };

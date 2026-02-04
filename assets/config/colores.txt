@@ -48,4 +48,5 @@ obreras naranja
 guerreras rojo 
 recolectoras amarillo
 color2 azul
-color1 cian
+color1 celeste
+color3 violeta
