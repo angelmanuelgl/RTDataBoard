@@ -31,7 +31,7 @@ int main( ){
     // --- configurar ventana ---
     std::cout << "2. Inicializando ventana..." << std::endl;
     sf::RenderWindow window;
-    Sistema::inicializarVentana(window, "Simulacion de Hormigas - Tesis");
+    Sistema::inicializarVentana(window, "Simulacion de Hormigas");
 
 
     // --- parametros para simular lo de hormigas ---

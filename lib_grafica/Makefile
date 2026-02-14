@@ -44,10 +44,13 @@ clean:
 	@if exist "$(BUILD_DIR)" del /q $(BUILD_DIR)\*.o
 	@if exist "$(LIB_DIR)" del /q $(LIB_DIR)\*.a
 
-
+# para exportar
 dist: all
-	@if not exist "dist" mkdir "dist"
-	@if not exist "dist/include" mkdir "dist/include"
-	@if not exist "dist/lib" mkdir "dist/lib"
-	copy include\*.hpp dist\include\
-	copy lib\libinsightrt.a dist\lib\
+	@if not exist "DynamicalSystemRT" mkdir "DynamicalSystemRT"
+	@if not exist "DynamicalSystemRT\include" mkdir "DynamicalSystemRT\include"
+	@if not exist "DynamicalSystemRT\lib" mkdir "DynamicalSystemRT\lib"
+	@echo Exportando headers...
+	cmd /c copy "include\*.hpp" "DynamicalSystemRT\include\"
+	@echo Exportando libreria estatica...
+	cmd /c copy "lib\libinsightrt.a" "DynamicalSystemRT\lib\"
+	@echo --- Libreria lista en carpeta /DynamicalSystemRT ---

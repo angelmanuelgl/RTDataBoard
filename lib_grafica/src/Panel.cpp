@@ -131,12 +131,9 @@ void Panel::draw(void) {
 */
 void Panel::cargarFuenteSiFalta(){
     if( !yafuenteCargada ){
-        if( fuentePredeterminada.loadFromFile("assets/fonts/Roboto.ttf") ){
-            yafuenteCargada = true;
-        }else{
-            // manejar error de carga de fuente
-            std::cerr << "Error al cargar la fuente predeterminada." << std::endl;
-        }
+        Objeto::cargarFuenteGlobal(); // Nos aseguramos que esté cargada
+        fuentePredeterminada = Objeto::fuenteCompartida; 
+        yafuenteCargada = Objeto::fuenteCargada;
     }
 }
 void Panel::ponerTitulo(const std::string& texto, const sf::Font& fuente){
