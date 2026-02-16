@@ -137,7 +137,10 @@ public:
     void configurarEjes(std::string nx, std::string ux, std::string ny, std::string uy) { nombreEjeX = nx; unidadEjeX = ux; nombreEjeY = ny; unidadEjeY = uy; }
     void configurarMarcas(int mx, int my) { numMarcasX = mx; numMarcasY = my; }
 
-    void configurarLimites( float mx, float MX, float my, float MY ){  lim = {mx,MX,my,MY}; autoEscalado = false;  }
+    void configurarLimites( float mx, float MX, float my, float MY, bool autoEsc = false ){  
+        lim = {mx,MX,my,MY}; 
+        autoEscalado = autoEsc;  
+    }
 
     void ponerSombreado( bool s, bool eje = true ){ sombreado = s; sombreadoAlEje = eje;}
     void ponerDesvanecido( bool s ){ desvanece = s;}

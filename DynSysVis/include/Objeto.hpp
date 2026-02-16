@@ -3,7 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 
-
+#include<logger.hpp>
 
 
 // Objeto.hpp
@@ -26,13 +26,13 @@ public:
         };
 
         for( const auto& ruta : rutas ){
-            if (fuenteCompartida.loadFromFile(ruta)) {
-                std::printf("Fuente cargada globalmente desde: %s\n", ruta.c_str());
+            if( fuenteCompartida.loadFromFile(ruta) ){
+                DSV_LOG_SUCCESS("Fuente cargada globalmente desde: " + ruta);
                 fuenteCargada = true;
                 return;
             }
         }
-        std::printf("ERROR EN OBJETO.hpp: NO se encontro Roboto.ttf en ninguna ruta.\n");
+        DSV_LOG_ERROR("NO se encontro Roboto.ttf en ninguna ruta");
     }
 
     Objeto() {

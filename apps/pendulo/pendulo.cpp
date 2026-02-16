@@ -12,14 +12,16 @@
     APLICACION: pendulo simple
                 ECUACION DIFERENCIABLE DE SEGUNDO ORDEN 
 */
+
 #include <SFML/Graphics.hpp>
 #include <cmath>
 #include <vector>
 #include <algorithm>
 
-#include "Libreria.hpp"
+#include "DynSysVis.hpp"
 
 int main( ){
+ 
     // --- cargar colores ---
     Tema::cargar("assets/config/colores.txt");
 
@@ -55,7 +57,7 @@ int main( ){
     // (opcional pero se ve mejor)
     // ptrTheta -> ponerSombreado( true, false);
     // graphTheta -> configurarLimites(-1,1, -1, 1);
-    ptrOmega -> configurarLimites( 0,0, -3, 3);
+    ptrOmega -> configurarLimites( 0,0, -3, 3, true);
     ptrFase -> configurarLimites(-3.2, 3.2, -2, 2 );
 
 
@@ -78,12 +80,12 @@ int main( ){
             // --- pendulo (Euler-Cromer para mejor estabilidad) ---
             float aceleracion = -(g / (L / 100.0f)) * std::sin(theta); // L/100 para escalar metros
             omega += aceleracion * dt;
-            omega *= amortiguamiento; // Descomenta para friccion
+            omega *= amortiguamiento; // Descomentar para friccion
             theta += omega * dt;
 
             // --- actualizar graficas ---
-            ptrTheta->addValue(theta);
             ptrOmega->addValue(omega);
+            ptrTheta->addValue(theta);
             ptrFase->addValue(omega, theta);
 
             accumulator -= ups;

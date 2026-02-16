@@ -15,8 +15,8 @@
 #include <vector>
 #include <algorithm>
 
-#include "Titulo.hpp"
-#include "Libreria.hpp"
+
+#include "DynSysVis.hpp"
 // #include "GraficoCircular.hpp"
 
 
@@ -36,20 +36,22 @@ int main( ){
 
     // --- parametros para simular lo de hormigas ---
 
+   
     // poblaciones iniciales
-    float O = 30.0f; // Obreras
-    float G = 30.0f;  // Guerreras
-    float R = 40.0f;  // Recolectoras
+// --- ESCENARIO 2: oscilaciones amortiguadas ---
 
-    // transisciones y etc
-    const float bO = 0.05f;     // natalidad obreras
-    const float betaOG = 2.1f;   // transicion O->G
-    const float betaGR = 0.9f;   // transicion G->R
-    const float betaRG = 0.08f;  // transicion R->G
-    const float kG = 80.0f;      // saturacion Guerreras
-    const float kR = 80.0f;      // saturacion Recolectoras
-    const float dG = 0.02f;      // muerte Guerreras
-    const float dR = 0.04f;      // muerte Recolectoras
+float O = 60.0f;
+float G = 20.0f;
+float R = 10.0f;
+
+const float bO = 0.05f;
+const float betaOG = 4.0f;
+const float betaGR = 2.5f;
+const float betaRG = 1.2f;
+const float kG = 50.0f;
+const float kR = 50.0f;
+const float dG = 0.005f;
+const float dR = 0.005f;
 
     std::cout << "3. Creando paneles..." << std::endl;
     // --- paneles derehca----
@@ -76,14 +78,17 @@ int main( ){
     panelCirc.positionRelativa(RelativoA::Abajo, panelfOR);
 
     // --- paneles centro----
-    Panel panelTriple(window, Tema::c("celeste"),"Poblacion de Hormigas", 3, 3); 
+    Panel panelTriple(window, Tema::c("celeste"),"Poblaciones de Hormigas", 3, 3); 
     panelTriple.positionRelativa(RelativoA::Izq  , panelG);
     
+    Panel panelP(window, Tema::c("celeste"),"Poblacion Total de Hormigas", 3, 3); 
+    panelP.positionRelativa(RelativoA::Abajo  , panelTriple);
     
     // --- graficas respecto a tiempo y respecot a fase ---
     auto* graphG = panelG.crearContenido<GraficaTiempo>(Tema::c("guerreras"));
     auto* graphR = panelR.crearContenido<GraficaTiempo>(Tema::c("recolectoras"));
     auto* graphO = panelO.crearContenido<GraficaTiempo>(Tema::c("obreras"));
+    auto* graphP = panelP.crearContenido<GraficaTiempo>(Tema::c("white"));
 
     auto* graphTriple = panelTriple.crearContenido<GraficaTiempo>(Tema::c("guerreras"));
     graphTriple -> agregarSerie("guerreras",Tema::c("guerreras"));
@@ -94,14 +99,15 @@ int main( ){
     graphG -> configurarMaxPoints(5000);
     graphR -> configurarMaxPoints(5000);
     graphO -> configurarMaxPoints(5000);
+    graphP -> configurarMaxPoints(5000);
 
     auto* faseOG = panelfOG.crearContenido<GraficaEspacioFase>(Tema::c("color1"));
     auto* faseOR = panelfOR.crearContenido<GraficaEspacioFase>(Tema::c("color2"));
     auto* faseRG = panelfRG.crearContenido<GraficaEspacioFase>(Tema::c("color3"));
 
-    faseOG -> configurarMaxPoints(10000);
-    faseOR -> configurarMaxPoints(10000);  
-    faseRG -> configurarMaxPoints(10000);
+    faseOG -> configurarMaxPoints(5000);
+    faseOR -> configurarMaxPoints(5000);  
+    faseRG -> configurarMaxPoints(5000);
 
 
     std::vector<sf::Color> colores = { Tema::c("obreras"), Tema::c("guerreras"), Tema::c("recolectoras") };
@@ -114,7 +120,7 @@ int main( ){
     //  (Paso fijo de 0.1s)
     sf::Clock clock;
     sf::Time accumulator = sf::Time::Zero;
-    sf::Time ups = sf::seconds(0.008f); // Update por segundo
+    sf::Time ups = sf::seconds(0.005f); // Update por segundo
     // ups = sf::seconds(0.5f); // Update por segundo
 
     std::cout << "5. Inicializando simulacion   ..." << std::endl;
@@ -149,6 +155,7 @@ int main( ){
             graphO -> addValue(O);
             graphG -> addValue(G);
             graphR -> addValue(R);
+            graphP -> addValue(O+G+R);
 
             graphTriple -> addValue(O, "obreras");
             graphTriple -> addValue(G, "guerreras");
@@ -171,6 +178,7 @@ int main( ){
         panelG.draw();
         panelR.draw();
         panelO.draw();
+        panelP.draw();
         panelfOG.draw();
         panelfOR.draw();
         panelfRG.draw();

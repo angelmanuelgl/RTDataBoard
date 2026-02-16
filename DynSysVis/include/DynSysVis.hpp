@@ -2,23 +2,26 @@
     * github: https://github.com/angelmanuelgl
     * web: https://angelmanuelgl.github.io/
     * 
-    * proyecto: InsightRT - - - - - - - - - - - - - - - - - - - 
-    * libreria de herramientas graficas para monitoreo de datos 
-    * en tiempo real y comportamiento de sistemas complejos.
+    NOMBRE:
+    Dynamical System Visualizer Real-Time
+    Dynamical System Visualizer RT
+    Dynamical System Visualizer
+    DynSysVis
+    
 */
-/*  Libreria.hpp
+/*  
     para incluir todo mas facilmente
-
 */
 
-#ifndef LIBRERIA_HPP
-#define LIBRERIA_HPP
+#ifndef DYNSYSVIS_HPP
+#define DYNSYSVIS_HPP
 
 
 #include "Geometria.hpp"
 
 #include "Panel.hpp" // Objeto Geoemtria / Titulo
 
+#include "logger.hpp"
 
 #include "Graficas.hpp"
 #include "Temas.hpp"

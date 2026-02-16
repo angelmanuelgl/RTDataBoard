@@ -1,0 +1,30 @@
+// --- ESCENARIO 2: ---
+
+float O = 80.0f;
+float G = 5.0f;
+float R = 5.0f;
+
+const float bO = 0.04f;
+const float betaOG = 3.5f;
+const float betaGR = 2.0f;
+const float betaRG = 0.3f;
+const float kG = 60.0f;
+const float kR = 60.0f;
+const float dG = 0.03f;
+const float dR = 0.02f;
+
+
+// --- ESCENARIO 3:  ---
+
+float O = 60.0f;
+float G = 20.0f;
+float R = 10.0f;
+
+const float bO = 0.05f;
+const float betaOG = 4.0f;
+const float betaGR = 2.5f;
+const float betaRG = 1.2f;
+const float kG = 50.0f;
+const float kR = 50.0f;
+const float dG = 0.005f;
+const float dR = 0.005f;

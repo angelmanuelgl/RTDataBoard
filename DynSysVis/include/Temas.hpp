@@ -15,6 +15,8 @@
 #ifndef TEMAS_HPP
 #define TEMAS_HPP
 
+#include "Logger.hpp"
+
 #include <SFML/Graphics.hpp>
 #include <cmath>
 #include <algorithm>
@@ -52,7 +54,7 @@ namespace Tema{
         std::string posible;
 
         while( file >> tag  ){
-            // TODO: hacer psoible agregar coemntarios
+            // es posible agregar comentarios con /
             if( tag.size() >= 1 && tag[0] == '/') {
                 std::string basura;
                 std::getline(file, basura); // Consume el resto de la linea y la tira
@@ -81,10 +83,10 @@ namespace Tema{
                     if(  siEs(r) && siEs(g) && siEs(b) && siEs(a)  ){
                         colores[tag] = sf::Color(r,g,b,a);
                     }else{
-                        std::cerr << "ERROR: Valores fuera de rango (0-255) en " << tag << "\n";
+                        DSV_LOG_ERROR("ERROR: Valores fuera de rango (0-255) en " + tag);
                     }
                 }catch (...){
-                    std::cerr << "ERROR: Formato numerico invalido en " << tag << "\n";
+                    DSV_LOG_ERROR("ERROR:  Formato numerico invalido en " + tag);
                     // mandar  la basura el resto por si en als demas lineas si hay algo
                     std::string basura;
                     std::getline(file, basura);
