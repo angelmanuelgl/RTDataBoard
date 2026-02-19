@@ -1,10 +1,11 @@
-# InsightRT - Libreria Grafica de datops para Simulaciones en tiempo Real
+# DynSysVis - Dynamical System Visualizer Real-Time
 
-**InsightRT** 
+
+**DynSysVis RT** 
 es una herramienta (en desarrollo) para la visualización de datos en tiempo real y análisis de sistemas dinámicos desarrollada en C++ utilizando la biblioteca SFML. 
 
 Está diseñada para integrarse fácilmente en simulaciones complejas, permitiendo monitorear mediante gráficas temporales y retratos de fase.
-**Ajustando tamaños** y **posiciones** muy facilmente usando un **sistema de panales** implementados por mi mismo
+**Ajustando tamaños** y **posiciones** muy facilmente usando un **sistema de panales** implementados por mi
 
 
 ## Caracteristicas
@@ -16,24 +17,26 @@ Está diseñada para integrarse fácilmente en simulaciones complejas, permitien
 
 ## Ejemplos de Uso: 
 
-
 **Sistema de ecuaciones Diferenciales (Modelo De Colonia de Hormigas)**
 
-![Image](https://github.com/user-attachments/assets/6257ad01-88e9-4828-8d25-a0eb1c262ee9)
+<img src="./imagenes/Hormigas.gif" width="300">  <img src="./imagenes/Hormigas02.gif" width="300">  <img src="./imagenes/Hormigas3.gif" width="300"> 
+
+
+<img src="./imagenes/HormigasFase.gif" width="300">  <img src="./imagenes/Hormigas04.gif" width="300"> 
 
 
 
-**Ecuaciones Diferenciales De Segundo Orde (Pendulo Simple con resistencia al aire)**
 
-![Image](https://github.com/user-attachments/assets/f2ebe176-b8e2-4021-9a7c-a3fe4edd0fc4)
+**Ecuaciones Diferenciales De Segundo Orden (Pendulo Simple con resistencia al aire)**
+
+<img src="./imagenes/PenduloFase.gif" width="300">
+<img src="./imagenes/Pendulo.gif" width="300">
 
 
 **Procesos Estocasticos (SpatialBranchingProcesses)**
 
-![Image](https://github.com/user-attachments/assets/63f04406-5a85-4423-8a49-52073ea1c5de)
-
-
-
+<img src="./imagenes/SpatialBranchingProcess.gif" width="300">
+<img src="./imagenes/SpatialBranchingProcess.gif" width="300">
 
 
 ## MAS Ejemplos de Uso: 
@@ -55,10 +58,9 @@ Está diseñada para integrarse fácilmente en simulaciones complejas, permitien
 * Circuitos RLC: Comportamiento de la carga y corriente en circuitos con inductores y capacitores.
 
 **PROCESOS ESTOCÁSTICOS Y PROBABILÍSTICOS** 
-
-Biología Matemática: Procesos de ramificación como el de Dalton-Watson
-Cadenas de Markov: Visualización de la evolución de estados en sistemas probabilísticos.
-Finanzas Cuantitativas: Modelado de caminatas aleatorias o movimiento browniano para simular fluctuaciones de mercado.
+* Biología Matemática: Procesos de ramificación como el de Dalton-Watson
+* Cadenas de Markov: Visualización de la evolución de estados en sistemas probabilísticos.
+F* nanzas Cuantitativas: Modelado de caminatas aleatorias o movimiento browniano para simular fluctuaciones de mercado.
 
 
 

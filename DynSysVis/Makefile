@@ -7,11 +7,15 @@ DIST_DIR = out$(NAME)
 
 # --- Configuración del Compilador ---
 CXX = g++
-CXXFLAGS = -Iinclude -Wall -std=c++17 
+CXXFLAGS = -Iinclude -Wall -std=c++17 -MMD -MP
+# -MMD: Genera archivos .d con las dependencias (qué headers usa cada .cpp)
+# -MP: Evita errores si borras un header
 
 ifeq ($(LOG), 1)
     CXXFLAGS += -DDSV_DEBUG
 endif
+# por ahora
+CXXFLAGS += -DDSV_DEBUG
 
 # --- Rutas de Carpetas ---
 SRC_DIR = src
@@ -50,10 +54,14 @@ $(LIBRARY): $(OBJECTS)
 
 
 # compila cada .cpp individualmente solo si ha sido modificado
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp $(HEADERS)
+# $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp $(HEADERS)
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 	@echo Compilando $<...
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
+# --- AQUÍ VA LA MAGIA ---
+# incluye los archivos .d que g++ generara en la carpeta build.
+-include $(OBJECTS:.o=.d)
 
 
 # --- --- ---  LIMPIAR POR SI NECESITA --- --- --- 
@@ -83,3 +91,5 @@ dist: cleandist all
 	@echo Exportando libreria estatica...
 	cmd /c copy "lib\$(LIBNAME).a" "$(DIST_DIR)\lib\"
 	@echo --- Libreria $(DIST_DIR) lista para usar ---
+
+

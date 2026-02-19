@@ -31,7 +31,12 @@ int main( ){
     dsv::Sistema::inicializarVentana(window, "DynSysVis RT - Péndulo Simple");
 
     // --- tablero con datos --- DSV
-    dsv::Tablero tablero(window);
+    dsv::Layout miLayout = {
+        "f  .",
+        "f  o",
+        "t t",
+    };
+    dsv::Tablero tablero(window, miLayout);
 
 
     // --- parametros del Pendulo ---
@@ -39,19 +44,16 @@ int main( ){
     float omega = 0.0f;      // velocidad angular inicial
     const float g = 9.81f;   // gravedad
     const float L = 200.0f;  // longitud del pendulo (en pixeles para visualizacion)
-    const float amortiguamiento = 0.999f; // opcional: para que se detenga poco a poco
+    const float amortiguamiento = 0.995f; // opcional: para que se detenga poco a poco
 
     // --- paneles ---  DSV
-    auto gTheta = tablero.add<dsv::GraficaTiempo>("Angulo Theta(t)", dsv::Color::c("rojo"), dsv::Color::c("rojo"));
-    auto gOmega = tablero.add<dsv::GraficaTiempo>("Velocidad Omega(t)", dsv::Color::c("naranja"),  dsv::Color::c("naranja"));
-    auto gFase  = tablero.add<dsv::GraficaEspacioFase>("Espacio de Fase", dsv::Color::c("violeta"), dsv::Color::c("violeta"));
-
-    gTheta.setPosition(dsv::Ubicacion::ArribaDer, 2,4);
-    gOmega.setPosition(dsv::RelativoA::Abajo, gTheta, 2,4 );
-    gFase.setPosition(dsv::Ubicacion::ArribaIzq, 2, 2);
+    auto gTheta = tablero.add<dsv::GraficaTiempo>("Angulo Theta(t)", dsv::Color::c("rojo"), "t", dsv::Color::c("rojo"));
+    auto gOmega = tablero.add<dsv::GraficaTiempo>("Velocidad Omega(t)", dsv::Color::c("naranja"), "o",  dsv::Color::c("naranja"));
+    auto gFase  = tablero.add<dsv::GraficaEspacioFase>("Espacio de Fase", dsv::Color::c("violeta"), "f", dsv::Color::c("violeta"));
 
     // --- acceder a metodos de los objetos -- DSV ( GraficaTiempo,GraficaEspacioFase , etc )
     gOmega->configurarLimites(0, 0, -3, 3, true);
+    gTheta->configurarLimites(0, 0, -2, 2, true);
     gFase->configurarLimites(-3.2, 3.2, -2, 2);
 
 

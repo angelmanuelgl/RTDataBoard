@@ -54,8 +54,8 @@ namespace dsv {
     // Si no estamos en modo debug, las macros no hacen nada (cero impacto en rendimiento)
     #define DSV_LOG_INFO(m)
     #define DSV_LOG_SUCCESS(m)
-    #define DSV_LOG_WARN(m)
-    #define DSV_LOG_ERROR(m)
+    #define DSV_LOG_WARN(m)    dsv::Logger::Log(dsv::Logger::Level::WARN,    m, __FILE__, __LINE__)
+    #define DSV_LOG_ERROR(m)   dsv::Logger::Log(dsv::Logger::Level::CRITIC,  m, __FILE__, __LINE__)
 #endif
 
 #endif

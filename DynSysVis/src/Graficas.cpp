@@ -32,14 +32,14 @@ void Serie::draw(sf::RenderWindow& window, sf::RenderStates states,
     if (puntos.empty()) return;
 
     // dibujar Sombreado (TriangleStrip)
-    if (sombreado) {
+    if(sombreado ){
         sf::VertexArray degradado(sf::TriangleStrip, puntos.size() * 2);
         for (size_t i = 0; i < puntos.size(); i++) {
             sf::Vector2f pPos = mapearPunto(puntos[i]);
             sf::Vector2f pBase = mapearPunto({puntos[i].x, valorReferenciaY});
 
             degradado[2 * i].position = pPos;
-            degradado[2 * i].color = sf::Color(color.r, color.g, color.b, 80);
+            degradado[2 * i].color = sf::Color(color.r, color.g, color.b, color.a*80/255);
 
             degradado[2 * i + 1].position = pBase;
             degradado[2 * i + 1].color = sf::Color(color.r, color.g, color.b, 0);
@@ -53,16 +53,16 @@ void Serie::draw(sf::RenderWindow& window, sf::RenderStates states,
         linea[i].position = mapearPunto(puntos[i]);
         
         sf::Color colFinal = color;
-        if (desvanece) {
+        if( desvanece ){
             float factor = static_cast<float>(i) / static_cast<float>(puntos.size() - 1);
-            colFinal.a = static_cast<sf::Uint8>(255 * factor);
+            colFinal.a = static_cast<sf::Uint8>(color.a * factor);
         }
         linea[i].color = colFinal;
     }
     window.draw(linea, states);
 
     // dibujar punto caveza y desvanezimiento
-    if (desvanece) {
+    if(desvanece ){
         float radioPunto = 3.5f;
         sf::CircleShape cabeza(radioPunto);
 

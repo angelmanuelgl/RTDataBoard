@@ -66,6 +66,7 @@ void Panel::setSize(double nx, double ny){
     elMarco.generar(size, radio, bgColor, extColor);
 }
 
+
 void Panel::setPosition(float x, float y) {
     pos_actual = {x, y};
     mytransform = sf::Transform::Identity;
@@ -79,6 +80,7 @@ void Panel::configurarMedidas( float r, float esp, float margen){
 }
 
 void Panel::positionAbsoluta(Ubicacion ubi){
+    DSV_LOG_WARN("recomednado usar funcion positionEnRejilla con objeto Tablero");
     sf::Vector2u winSize = window.getSize();
     float x = 0, y = 0;
     switch(ubi) {
@@ -96,6 +98,7 @@ void Panel::positionAbsoluta(Ubicacion ubi){
 }
 
 void Panel::positionRelativa(RelativoA rel, const Panel& other){
+    DSV_LOG_WARN("recomednado usar funcion positionEnRejilla con objeto Tablero");
     sf::Vector2f oPos = other.getPosition();
     sf::Vector2f oSize = other.getSize();
     float x = oPos.x;
@@ -108,7 +111,28 @@ void Panel::positionRelativa(RelativoA rel, const Panel& other){
     }
     setPosition(x, y);
 }
- 
+
+void Panel::sizeEnRejilla(int spanF, int spanC, int totalFilas, int totalCols){
+    setSize( (double)totalCols / spanC, (double)totalFilas / spanF );
+}
+
+void Panel::positionEnRejilla(int fila, int col, int totalFilas, int totalCols ){
+    // cuanto mide cada celda
+    sf::Vector2u winSize = window.getSize();
+    float dispX = (float)winSize.x - (2.0f * margenVentana);
+    float dispY = (float)winSize.y - (2.0f * margenVentana);
+    float celdaX = (dispX - (totalCols - 1) * espaciado) / totalCols;
+    float celdaY = (dispY - (totalFilas - 1) * espaciado) / totalFilas;
+
+    // coordenas
+    float x = margenVentana + col * (celdaX + espaciado);
+    float y = margenVentana + fila * (celdaY + espaciado);
+
+    
+    setPosition(x, y);
+}
+
+
 sf::RenderStates Panel::getInternalState() const {
     sf::RenderStates states;
     states.transform = mytransform;

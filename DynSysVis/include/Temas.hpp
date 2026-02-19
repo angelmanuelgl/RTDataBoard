@@ -70,6 +70,41 @@ namespace Color{
     const sf::Color terracota(180, 90, 80, 255);
     const sf::Color oro(215, 170, 70, 255);
     
+    // ---------------------------------------------------
+    //  Arcoiris
+    inline sf::Color Arcoiris(int i, int n) {
+        float f = 0.3f; // frecuencia
+        return sf::Color(
+            std::sin(f * i + 0) * 127 + 128,
+            std::sin(f * i + 2) * 127 + 128,
+            std::sin(f * i + 4) * 127 + 128
+        );
+    }
+
+    // Cyberpunk: Magenta Neon -> Cyan Electrico
+    inline sf::Color Cyberpunk(int i, int n) {
+        float ratio = static_cast<float>(i) / (n - 1);
+        return sf::Color(
+            255 * (1.0f - ratio), // El rojo baja
+            200 * ratio,          // El verde sube
+            255                   // El azul siempre a tope
+        );
+    }
+
+    // Fuego e Hielo: De Rojo ->  Azul 
+    inline sf::Color FuegoHielo(int i, int n) {
+        float ratio = static_cast<float>(i) / (n - 1);
+        return sf::Color(
+            255 * (1.0f - ratio), // Rojo en i=0
+            50,                    // Un toque de verde para suavizar
+            255 * ratio           // Azul en i=n
+        );
+    }
+    
+
+
+
+    // ---------------------------------------------------
     //  mapa  se guardan todos los colores del txt
     inline std::map<std::string, sf::Color> colores;
 

@@ -21,10 +21,10 @@
 #define PANEL_HPP
 
 
-#include "Geometria.hpp" // para que reconozca la clase de los rectangulos
-#include "Objeto.hpp" // para que conozca el Objeto generico 
-#include "Titulo.hpp" // para que conozca el titulo
-
+#include "Geometria.hpp" // para que dibuje
+#include "Objeto.hpp" // para que conozca el Objeto generico // no es necesarioq ue conozca todos los objetos
+#include "Titulo.hpp" 
+#include "Logger.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <memory>        // Para unique_ptr
@@ -79,23 +79,34 @@ public:
                 double nx = 3, double ny = 4, // para tamano
                 sf::Color bgColor=sf::Color(30,30,30) ); // color de fondo
 
-    void setSize(double nx, double ny);
-
-    sf::Vector2f getPosition() const { return pos_actual; }
-    sf::Vector2f getSize() const { return size; }
-
-    void positionAbsoluta(Ubicacion ubi);
-    void positionRelativa(RelativoA rel, const Panel& other);
-    void setPosition(float x, float y);
     void configurarMedidas( float r, float esp, float margen);
+       
+ 
+    // posicionamiento 
+    void setSize(double nx, double ny);
+    void setPosition(float x, float y);
+    [[deprecated("Usa positionEnRejilla para un layout mas limpio")]]
+    void positionAbsoluta(Ubicacion ubi);
+    [[deprecated("Usa positionEnRejilla para un layout mas limpio")]]
+    void positionRelativa(RelativoA rel, const Panel& other);
     
-    sf::RenderStates getInternalState() const;
+
+    // nuevo posiconamiento
+    void sizeEnRejilla(int spanF, int spanC, int totalFilas, int totalCols);
+    void positionEnRejilla(int fila, int col, int totalFilas, int totalCols);
+
+    // dibujar
     void draw(void);
     
+    // GETs
+    sf::Vector2f getPosition() const { return pos_actual; }
+    sf::Vector2f getSize() const { return size; }
+    sf::RenderStates getInternalState() const;
+
     // -- titulo --- 
     void cargarFuenteSiFalta();
     void ponerTitulo(const std::string& texto, const sf::Font& fuente);
-
+    void setSizeTitulo( unsigned int s ){ titulo-> setSize(s); }
 
     // --- como interactua con el contenido --- 
     void setContenido( std::unique_ptr<Objeto> nuevoContenido );
