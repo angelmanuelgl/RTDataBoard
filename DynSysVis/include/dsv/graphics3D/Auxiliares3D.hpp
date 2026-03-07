@@ -16,14 +16,6 @@
 
 namespace dsv{
 
-
-
-/*
-    --- --- --- --- --- --- --- --- --- --- --- 
-    --- --- --- GESTIONAR SERIES ID --- --- --- 
-    --- --- --- --- --- --- --- --- --- --- --- 
-*/  
-
 /*
     --- --- --- --- --- --- --- --- --- --- --- 
     --- --- - ELEMENTOS DE LA GRAFICA - --- --- 
@@ -32,9 +24,9 @@ namespace dsv{
 
 struct Ejes3D { 
     // limites ejes
-    float minX = -100.f, maxX = 100.f;
-    float minY = -100.f, maxY = 100.f;
-    float minZ = -100.f, maxZ = 100.f;
+    float minX = -20.f, maxX = 20.f;
+    float minY = -20.f, maxY = 20.f;
+    float minZ = -20.f, maxZ = 20.f;
 
     sf::Color colorX = sf::Color::Red;
     sf::Color colorY = sf::Color::Green;

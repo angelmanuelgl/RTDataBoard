@@ -96,6 +96,7 @@ Yo me encargo de que el makefile siempre funcione apesar de los cambios en carpe
 luego compilar  proyectos con
 ```
 mingw32-make run APP=apps/pendulo/pendulo.cpp
+mingw32-make run APP=apps/pendulo/penduloOld.cpp
 mingw32-make run APP=apps/pendulo/penduloFase.cpp
 
 mingw32-make run APP=apps/hormigas/main.cpp

@@ -71,6 +71,26 @@ struct Limites {
     float minX, maxX, minY, maxY;
 };
 
+void inline ajustarLimites_EvitarDivisionCero(Limites& lim) {
+    const float eps = std::numeric_limits<float>::epsilon() * 100.0f;
+    // configurar el ajsute
+    auto ajustar = [eps](float& minVal, float& maxVal) {
+        float delta = maxVal - minVal;
+        float maxAbs = std::max(std::abs(minVal), std::abs(maxVal));
+      
+        float eps_relativo = std::max(maxAbs * eps, 1e-37f); 
+
+        if( delta <= eps_relativo ){
+            float offset = (maxAbs > eps_relativo) ? maxAbs * 0.1f : 1.0f;
+            minVal -= offset;
+            maxVal += offset;
+        }
+    };
+    // ahora si ajustar cada uno
+    ajustar(lim.minX, lim.maxX);
+    ajustar(lim.minY, lim.maxY);
+}
+
 template <typename T>
 class MonotonicQueue2D {
 private:

@@ -188,8 +188,15 @@ public:
 };
 
 class EspacioFase2D : public GraficaBase {
+// diferencias entre seguimiento y autoescalado: 
+// el auto escalado recalcula los limites de las series y ajusta la vista para que siempre se vean
+// AUTOESCALADO: expande limites, pero no los centra, asi que si las series se mueven a un lado, la grafica se va a ese lado, pero siempre mostrando todo el rango de las series
+//  SEGUIMIENTO: ajusta los limites para que siempre esten centrados en las series, asi que si las series se mueven a un lado, la grafica se va a ese lado pero siempre centrada en las series, y con un margen extra para que no se mueva tan rapido
+
 private:
     bool seguimiento = false;
+
+    bool YaSeActualizaronLimites = false; // la primera vez que se actualizan es dieferente porque antes no hay datos, asi que se ponen esos limites, si no se expanden
 
 public:
     EspacioFase2D(sf::Color color = sf::Color::Blue );

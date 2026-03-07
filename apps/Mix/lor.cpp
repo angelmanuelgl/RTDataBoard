@@ -13,10 +13,13 @@ int main() {
     //     "3d 3d 3d f2 f2",
     //     "3d 3d 3d f3 f4  ",
     // };
+    // dsv::Layout miLayout = {
+    //     "3d 3d  f2",
+    //     "3d 3d  f3 ",
+    //     "3d 3d  f4 "
+    // };
     dsv::Layout miLayout = {
-        "3d 3d  f2",
-        "3d 3d  f3 ",
-        "3d 3d  f4 "
+        "3d",
     };
     dsv::Tablero tablero(window, miLayout,  sf::Color(30,30,40),  sf::Color(20,20,25));
     
@@ -35,15 +38,15 @@ int main() {
         fff->activarSeguimiento(true);
         fff->configurarMaxPoints(1000);
     }
-    fase3D.objeto.getGestor().setMaxPointsSeries(1000);
-    fase3D.objeto.getGestor().setGrosorSeries(15.5f);
-    fase3D.objeto.getGestor().setAdelgazado(false);
-    fase3D.objeto.getGestor().setDifuminado(false);
-    // fase3D.objeto.getGestor().setColorSeries( dsv::Color::Magma() );
+    fase3D.objeto.getGestor().setMaxPointsSeries(200);
+    fase3D.objeto.getGestor().setGrosorSeries(1.0f);
+    fase3D.objeto.getGestor().setAdelgazadoSeries(false);
+    fase3D.objeto.getGestor().setDifuminadoSeries(false);
+    fase3D.objeto.getGestor().setColorSeries( dsv::Color::Cyberpunk() );
     
     
     // --- --- ---  Inicializar 20 instancias --- --- --- 
-    const int numSims = 5;
+    const int numSims = 500;
     std::vector<dsv::mod::Lorenz_Instance> sims(numSims);
     
     // rangos aleatorios
@@ -64,8 +67,12 @@ int main() {
         for( auto fff : { faseXY, faseYZ, faseXZ} )
             fff-> agregarSerie(id, col);
         
-    
-        // fase3D.objeto.getGestor().agregarSerie(i);
+        
+        // por si queremos personalizar los colores individuales
+        // if( i%2)
+        auto xd = {dsv::Color::morado, dsv::Color::azul,  dsv::Color::cian, dsv::Color::violeta, dsv::Color::morado,  dsv::Color::azul_noche};
+        fase3D.objeto.getGestor().agregarSerie(i, xd);
+            
     }
 
    
@@ -103,7 +110,7 @@ int main() {
                 faseYZ->push_back(s.state[1], s.state[2], id);
                 faseXZ->push_back(s.state[0], s.state[2], id);
 
-                fase3D->push_back(s.state[0], s.state[1], s.state[2], i);
+                fase3D.objeto.getGestor().push_back( {s.state[0], s.state[1], s.state[2]}, i);
                 
             }
             

@@ -20,7 +20,7 @@ protected:
     GestorSeries gestor;
     Camara3D camara;
     Limites3D lim;
-    // Ejes3D ejes; // Se activara cuando definamos la clase de ejes
+    Ejes3D ejes; // Se activara cuando definamos la clase de ejes
 
     void actualizarLimites(float x, float y, float z ){ 
         if (x < lim.minX) lim.minX = x; 
@@ -38,68 +38,13 @@ public:
         // Inicializar limites para el auto-ajuste de escala
         lim.minX = lim.minY = lim.minZ = std::numeric_limits<float>::max();
         lim.maxX = lim.maxY = lim.maxZ = std::numeric_limits<float>::lowest();
+
+        camara.distanciaCamara = 100.0f;
     }
 
-    // ============================================================
-    // --- GESTION DE SERIES (API UNIFICADA) --- // TODO <----------
-    // ============================================================
-    
-    // // --- --- --- Gestion de Memoria --- --- ---
-    // void setMaxPointsSeries(size_t n){ 
-    //     gestor.setMaxPointsSeries(n); 
-    // }
-
-
-    // // --- --- --- Agregar Serie--- --- ---
-    // // paleta
-    // size_t agregarSerie(const std::string& nombre, const std::vector<sf::Color>& paleta ){ 
-    //     return gestor.agregarSerie(nombre, paleta);
-    // }
-
-    // size_t agregarSerie(const std::string& nombre, sf::Color col = sf::Color::Cyan ){ 
-    //     return gestor.agregarSerie(nombre, col);
-    // }
-    
-    // size_t agregarSerie(sf::Color col = sf::Color::Cyan ){ 
-    //     return gestor.agregarSerie(col);
-    // }
-
-    // --- Push Back (Alimentacion de datos) ---
-    // El nombre es opcional //  si no se pone, va  "default"
-    void push_back(float x, float y, float z, const std::string& nombre = "default" ){ 
-        gestor.push_back({x, y, z}, nombre);
-        actualizarLimites(x, y, z);
-    }
-    void push_back(float x, float y, float z, size_t id ){ 
-        gestor.push_back({x, y, z}, id);
-        actualizarLimites(x, y, z);
-    }
-
-    // // --- Set Color (Unificado: acepta Color o Paleta) ---
-    
-    // // Por Nombre
-    // void setColor(const std::string& nombre, sf::Color col ){  gestor.setColor(col, nombre); }
-    // void setColor(const std::string& nombre, const std::vector<sf::Color>& paleta ){  gestor.setColor(paleta, nombre); }
-
-    // // Por ID
-    // void setColor(size_t id, sf::Color col ){  gestor.setColor(col, id); }
-    // void setColor(size_t id, const std::vector<sf::Color>& paleta ){  gestor.setColor(paleta, id); }
-
-    // // Global (Para todas las series)
-    // void setColor(sf::Color col ){  gestor.setColorSeries(col); }
-    // void setColor(const std::vector<sf::Color>& paleta ){  gestor.setColorSeries(paleta); }
-
-    
-    //  // --- --- ---  Grosores --- --- --- 
-    // void setGrosor(float g, size_t id){}
-    // void setGrosor(float g, const std::string& nombre= "default");
-    // void setGrosorSeries(float g);
-
-
-    // // --- Difuminado ---
-    // void setDifuminado(bool b, size_t id);
-    // void setDifuminado(bool b, const std::string& nombre= "default");
-    // void setDifuminadoSeries(bool b);
+    // TODO ============================================================
+    // TODO--- GESTION DE SERIES (API UNIFICADA) --- // TODO <----------
+    // TODO ============================================================
 
 
 
@@ -111,7 +56,43 @@ public:
         camara.gestionarEvento(ev, win);
     }
 
+    void dibujarEjes(sf::RenderWindow& window, sf::RenderStates states, sf::Vector2f pSize) {
+        if (!ejes.visible) return;
+
+        // float margen = 0.5f;
+
+        // float anchoX = lim.maxX - lim.minX;
+        // ejes.minX = lim.minX - (anchoX * margen);
+        // ejes.maxX = lim.maxX + (anchoX * margen);
+
+        // float anchoY = lim.maxY - lim.minY;
+        // ejes.minY = lim.minY - (anchoY * margen);
+        // ejes.maxY = lim.maxY + (anchoY * margen);
+
+        // float anchoZ = lim.maxZ - lim.minZ;
+        // // ejes.minZ = lim.minZ - (anchoZ * margen);
+        // // ejes.maxZ = lim.maxZ + (anchoZ * margen);
+
+        // Eje X: De ejes.minX a ejes.maxX pasando por el ORIGEN del mundo
+        sf::Vector2f p1x = camara.proyectar({ejes.minX, 0.f, 0.f}, pSize, lim);
+        sf::Vector2f p2x = camara.proyectar({ejes.maxX, 0.f, 0.f}, pSize, lim);
+        dsv::draw::linea(window, states, {p1x, p2x}, ejes.colorX, ejes.grosor);
+
+        // Eje Y: 
+        sf::Vector2f p1y = camara.proyectar({0.f, ejes.minY, 0.f}, pSize, lim);
+        sf::Vector2f p2y = camara.proyectar({0.f, ejes.maxY, 0.f}, pSize, lim);
+        dsv::draw::linea(window, states, {p1y, p2y}, ejes.colorY, ejes.grosor);
+
+        // Eje Z:
+        sf::Vector2f p1z = camara.proyectar({0.f, 0.f, ejes.minZ}, pSize, lim);
+        sf::Vector2f p2z = camara.proyectar({0.f, 0.f, ejes.maxZ}, pSize, lim);
+        dsv::draw::linea(window, states, {p1z, p2z}, ejes.colorZ, ejes.grosor);
+    }
+
+
+
     void draw(sf::RenderWindow& window, sf::RenderStates states, sf::Vector2f pSize) override {
+        dibujarEjes(window,states,pSize);
         // 1. Dibujar Ejes y Rejilla (Pendiente de implementar en Auxiliares3D)
         // ejes.draw(window, states, camara, lim, pSize);
 

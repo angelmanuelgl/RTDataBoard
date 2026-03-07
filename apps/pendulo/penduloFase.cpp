@@ -18,21 +18,30 @@ int main( ){
 
     // Layout: Fase a la izquierda (grande) y una gráfica de tiempo a la derecha
     dsv::Layout miLayout = {
+        "FASE FASE FASE FASE2",
+        "FASE FASE FASE FASE2",
         "FASE FASE FASE .",
-        "FASE FASE FASE .",
-        "FASE FASE FASE .",
-        "T T T T"
+        "T"
     };
     dsv::Tablero tablero(window, miLayout);
 
     // Paneles
     auto gFase = tablero.add<dsv::EspacioFase2D>("Retrato de Fase (20 trayectorias)", dsv::Color::azul, "FASE");
+    auto gFase2 = tablero.add<dsv::EspacioFase2D>("Retrato de Fase con seguimiento", dsv::Color::azul, "FASE2");
     auto gTiempo = tablero.add<dsv::GraficaTiempo>("Velocidades Angulares", dsv::Color::violeta, "T");
 
-    
-    gFase -> configurarLimites(-3.2, 3.2, -5.5, 5.5, false );
-    // gFase-> ponerCabeza(false);
+    // longifut de las colas
     gFase-> configurarMaxPoints(1000);
+    gFase2-> configurarMaxPoints(100);
+
+    // deja los limites de la grafica de fase fijos para que no se muevan al agregar datos nuevos
+    gFase -> configurarLimites(-3.2, 3.2, -5.5, 5.5, false );
+    // activar el seguimiento en la grafica de fase 2, asi que se le deja el autoEscalado para que ajuste los limites segun los datos nuevos, pero se le pone un margen grande para que no se muevan tan rapido
+    gFase2 -> activarSeguimiento(true);
+
+
+    // gFase-> ponerCabeza(false);
+   
     gTiempo -> configurarLimites(0, 0, -6, 6 , true );
     // gTiempo ->configurarMaxPoints (1000 );
 
@@ -54,6 +63,7 @@ int main( ){
         col2.a = 70;
         // Registrar la serie en los paneles
         gFase->agregarSerie(id, col);
+        gFase2->agregarSerie(id, col);
         gTiempo->agregarSerie(id, col2);
     }
 
@@ -61,7 +71,7 @@ int main( ){
     const float g = 7.81f;
     const float L = 1.0f; 
     float t = 0;
-    const float amortiguamiento = 0.997f;
+    const float amortiguamiento = 0.996f;
 
     sf::Clock clock;
     sf::Time accumulator = sf::Time::Zero;
@@ -93,6 +103,7 @@ int main( ){
 
                 // agregar
                 gFase->push_back(p.theta, p.omega, p.id);
+                gFase2->push_back(p.theta, p.omega, p.id);
                 gTiempo->push_back(p.omega, t, p.id);
             }
             accumulator -= ups;

@@ -455,21 +455,22 @@ void EspacioFase2D::push_back(float x, float y , std::string clave){
     push_back_Gen({x, y}, clave);
 }
 void EspacioFase2D::recalcularExtremos(void){
-     if(series.empty() ) return;
+    if( series.empty() ) return;
+
+    bool haySeriesConDatos = false;
 
     Limites limAllSeries;
     bool primerSerie = true;
     for( auto const& [id, serie] : series ){
         if( serie.vacia() ) continue;
+        haySeriesConDatos = true;
 
         Limites limSerie = serie.getLimites(); // ahora O(1)
-
         // la primer serie
         if( primerSerie ){
             limAllSeries = limSerie;        
             primerSerie = false;
         } 
-
 
         // actuaizar
         if( limSerie.minX < limAllSeries.minX) limAllSeries.minX = limSerie.minX;
@@ -478,10 +479,14 @@ void EspacioFase2D::recalcularExtremos(void){
         if( limSerie.maxY > limAllSeries.maxY) limAllSeries.maxY = limSerie.maxY;
         
     }
-    //  --- margen   los limites que dan las series ---
+    // no actualizar nada si no tenemos datos
+    if( !haySeriesConDatos ) return;
+
+
+    //  --- margen  los limites que dan las series ---
     // 5% de margen
-    float my = 0.05 * (lim.maxY - lim.minY); // margen
-    float mx = 0.05 * (lim.maxX - lim.minX); // margen
+    float my = 0.05 * (limAllSeries.maxY - limAllSeries.minY); // margen
+    float mx = 0.05 * (limAllSeries.maxX - limAllSeries.minX); // margen
     
     // poco mas de margen
     if( seguimiento ){
@@ -492,12 +497,20 @@ void EspacioFase2D::recalcularExtremos(void){
     limAllSeries = {   limAllSeries.minX-mx, limAllSeries.maxX+mx, limAllSeries.minY-my, limAllSeries.maxY+my };
 
 
-    // --- actualziar limites -- 
+    // --- --- --- ---  actualziar limites  --- --- --- ---
+    // lim es la variable global de la grafica que se usa para mapear los puntos a pixeles, asi que aqui es donde se actualiza el zoom y el centro de la grafica
+
+    // la primera vez que se actualizan los limites es diferente porque antes no hay datos, asi que se ponen esos limites, si no se expanden
+    // para evitar que se expandan desde el 0,0 
+    // queremos que se expandan desde donde  esten lod datos
+    if( !YaSeActualizaronLimites ){
+        lim = limAllSeries;
+        YaSeActualizaronLimites = true;
+        return;
+    }
 
     // si se ajusta siempre
-    if( seguimiento ){   
-        lim = limAllSeries;
-    }
+    if( seguimiento ) lim = limAllSeries;
     // si solo crece
     else{
         if( limAllSeries.minX < lim.minX) lim.minX = limAllSeries.minX;
@@ -521,15 +534,8 @@ void EspacioFase2D::recalcularExtremos(void){
 
 
     // ---  OJO CON DIVIDIR ENTRE 0 --- 
-    float epsilon = 0.0001f;
-    if( abs(lim.maxX - lim.minX) < epsilon ){
-        lim.minX -= 1.0f;
-        lim.maxX += 1.0f;
-    }
-    if( std::abs(lim.maxY - lim.minY) < epsilon ){
-        lim.minY -= 1.0f;
-        lim.maxY += 1.0f;
-    }
+    // esta funcion esta en estructuras
+    ajustarLimites_EvitarDivisionCero(lim);
 }
 
 
