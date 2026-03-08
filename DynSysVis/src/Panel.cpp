@@ -45,7 +45,7 @@ Panel::Panel(sf::RenderWindow& window_,  const std::string& tituloPanel, sf::Col
     elMarco.generar(size, radio, bgColor, extColor);
 
     // tecnicamente con llamar al consturctor no basta hay que llamar a 
-    //  sizeEnRejilla  y positionEnRejilla para que funcione
+    // sizeEnRejilla  y positionEnRejilla para que funcione
     // esto ya lo hace el layout asi que no deberia haber problema
     
 }

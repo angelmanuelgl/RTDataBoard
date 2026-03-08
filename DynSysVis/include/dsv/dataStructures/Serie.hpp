@@ -75,6 +75,11 @@ struct Serie {
         paleta = {col};
     }
 
+    void setColor(std::vector<sf::Color> col) {
+        paleta = col;
+    }
+
+
     // Acceso rapido para el draw si solo hay un color
     sf::Color getColorPrincipal() const {
         return paleta.empty() ? sf::Color::White : paleta[0];

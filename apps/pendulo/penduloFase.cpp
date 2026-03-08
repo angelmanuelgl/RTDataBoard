@@ -18,9 +18,9 @@ int main( ){
 
     // Layout: Fase a la izquierda (grande) y una gráfica de tiempo a la derecha
     dsv::Layout miLayout = {
-        "FASE FASE FASE FASE2",
-        "FASE FASE FASE FASE2",
-        "FASE FASE FASE .",
+        "FASE FASE FASE FASE FASE2 FASE2",
+        "FASE FASE FASE FASE FASE2 FASE2",
+        "FASE FASE FASE FASE . .",
         "T"
     };
     dsv::Tablero tablero(window, miLayout);

@@ -8,19 +8,20 @@ int main() {
     sf::RenderWindow window;
     dsv::Sistema::inicializarVentana(window, "DynSysVis RT - 20 Simulaciones SIR");
 
-    // dsv::Layout miLayout = {
-    //     "3d 3d 3d f2 f2",
-    //     "3d 3d 3d f2 f2",
-    //     "3d 3d 3d f3 f4  ",
-    // };
+    dsv::Layout miLayout = {
+        "3d 3d 3d 3d 3D 3D",
+        "3d 3d 3d 3d 3D 3D",
+        "3d 3d 3d 3d f2 . ",
+        "3d 3d 3d 3d f3 f4 ",
+    };
     // dsv::Layout miLayout = {
     //     "3d 3d  f2",
     //     "3d 3d  f3 ",
     //     "3d 3d  f4 "
     // };
-    dsv::Layout miLayout = {
-        "3d",
-    };
+    // dsv::Layout miLayout = {
+    //     "3d",
+    // };
     dsv::Tablero tablero(window, miLayout,  sf::Color(30,30,40),  sf::Color(20,20,25));
     
     // Paneles
@@ -29,6 +30,7 @@ int main() {
     dsv::Vista< dsv::EspacioFase2D > faseXZ = tablero.add<dsv::EspacioFase2D>("Fase: XZ", dsv::Color::violeta, "f4");
 
     dsv::Vista< dsv::Grafica3D > fase3D = tablero.add<dsv::Grafica3D>("Trayectorias Modelo Lorentz", dsv::Color::violeta, "3d");
+    dsv::Vista< dsv::Grafica3D > fase3D_proye = tablero.add<dsv::Grafica3D>("Trayectorias Modelo Lorentz", dsv::Color::rosa, "3D");
      
     tablero.setPanelDegradado( sf::Color(30,30,40),  sf::Color(20,20,25));
     
@@ -36,14 +38,21 @@ int main() {
     // --- --- --- Configuracion visual --- --- --- 
     for( auto fff : { faseXY, faseYZ, faseXZ } ){
         fff->activarSeguimiento(true);
-        fff->configurarMaxPoints(1000);
+        fff->configurarMaxPoints(50);
+        fff->ponerCabeza(false);
     }
-    fase3D.objeto.getGestor().setMaxPointsSeries(200);
-    fase3D.objeto.getGestor().setGrosorSeries(1.0f);
-    fase3D.objeto.getGestor().setAdelgazadoSeries(false);
-    fase3D.objeto.getGestor().setDifuminadoSeries(false);
-    fase3D.objeto.getGestor().setColorSeries( dsv::Color::Cyberpunk() );
+    for( auto fff : { fase3D, fase3D_proye } ){
+        fff.objeto.getGestor().setMaxPointsSeries(50);
+        fff.objeto.getGestor().setGrosorSeries(1.0f);
+        fff.objeto.getGestor().setAdelgazadoSeries(false);
+        fff.objeto.getGestor().setDifuminadoSeries(false);
+        // ajustrar el degradado de TODAS las series
+        fff.objeto.getGestor().setColorSeries( dsv::Color::Oceano() );
+    }
+  
     
+
+
     
     // --- --- ---  Inicializar 20 instancias --- --- --- 
     const int numSims = 500;
@@ -69,19 +78,28 @@ int main() {
         
         
         // por si queremos personalizar los colores individuales
-        // if( i%2)
-        auto xd = {dsv::Color::morado, dsv::Color::azul,  dsv::Color::cian, dsv::Color::violeta, dsv::Color::morado,  dsv::Color::azul_noche};
-        fase3D.objeto.getGestor().agregarSerie(i, xd);
-            
+        // std::vector<sf::Color> xd = {dsv::Color::morado, dsv::Color::azul,  dsv::Color::cian, dsv::Color::violeta, dsv::Color::morado,  dsv::Color::azul_noche};
+        std::vector<sf::Color> xd = dsv::Color::Oceano();
+        // fase3D.objeto.getGestor().agregarSerie(i, xd);
+        // fase3D_proye.objeto.getGestor().agregarSerie(i, xd);
+
+        if( !i){
+            fase3D.objeto.getGestor().agregarSerie(i, dsv::Color::rojo);
+            fase3D_proye.objeto.getGestor().agregarSerie(i, dsv::Color::rojo);
+            fase3D.objeto.getGestor().setGrosor(15, i);
+            fase3D_proye.objeto.getGestor().setGrosor(15, i);
+        }
+
     }
 
    
     sf::Clock clock;
     sf::Time accumulator = sf::Time::Zero;
-    sf::Time ups = sf::seconds(0.01f);
+    sf::Time ups = sf::seconds(0.005f);
     bool iniciado = false;
 
     while(window.isOpen()) {
+        // --- --- ---  GESTINAR EVENTOS Y REPARTIR --- --- ---
         sf::Event event;
         while(window.pollEvent(event)) {
             if(event.type == sf::Event::Closed) window.close();
@@ -91,8 +109,10 @@ int main() {
                 clock.restart();
             } 
             fase3D->gestionarEvento(event, window);
+            fase3D_proye->gestionarEvento(event, window);
         }
 
+        // --- --- --- ACTUALIZAR DATOS DE SIMULACION --- --- ---
         accumulator += clock.restart();
         while(accumulator >= ups && iniciado) {
 
@@ -101,25 +121,38 @@ int main() {
             for( int i = 0; i < numSims; i++){
                 auto& s = sims[i];
                 std::string id = "Sim" + std::to_string(i);
-
                 //  integrador
                 dsv::sim::step(s, dt);
-
-                // Llenar graficas
-                faseXY->push_back(s.state[0], s.state[1], id);
-                faseYZ->push_back(s.state[1], s.state[2], id);
-                faseXZ->push_back(s.state[0], s.state[2], id);
-
-                fase3D.objeto.getGestor().push_back( {s.state[0], s.state[1], s.state[2]}, i);
-                
             }
-            
+
             accumulator -= ups;
+        }   
+
+        // --- --- --- AGREGAR DATOS MAS RECIENTES --- --- ---
+        // actualizar cada  instancia            
+        for( int i = 0; i < numSims; i++){
+            auto& s = sims[i];
+            std::string id = "Sim" + std::to_string(i);
+
+            // Llenar graficas
+            faseXY->push_back(s.state[0], s.state[1], id);
+            faseYZ->push_back(s.state[1], s.state[2], id);
+            faseXZ->push_back(s.state[0], s.state[2], id);
+
+            fase3D.objeto.getGestor().push_back( {s.state[0], s.state[1], s.state[2]}, i);
+            
+            if( i < 50 ){
+                fase3D_proye.objeto.getGestor().push_back( {s.state[0], s.state[1], s.state[2]}, i);
+                fase3D_proye.objeto.getGestor().push_back( {-40, s.state[1], s.state[2]}, i +numSims *1 );
+                fase3D_proye.objeto.getGestor().push_back( {s.state[0], -40, s.state[2]}, i +numSims*2 );
+                fase3D_proye.objeto.getGestor().push_back( {s.state[0], s.state[1], -40}, i +numSims*3 );
+            }
+
         }
 
-     
-            tablero.draw();
-            window.display();
+        // --- --- --- DIBUJAR --- --- ---
+        tablero.draw();
+        window.display();
         
      
     }

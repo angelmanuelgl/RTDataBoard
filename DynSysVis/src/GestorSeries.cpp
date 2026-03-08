@@ -40,6 +40,7 @@ void GestorSeries::reajustarCapacidad(size_t idNecesario ){
     }
 }
 
+
 // --- --- --- --- --- --- --- ---
 // --- --- - Agregar Serie --- ---
 // --- --- --- --- --- --- --- ---

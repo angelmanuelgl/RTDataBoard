@@ -21,23 +21,17 @@ protected:
     Camara3D camara;
     Limites3D lim;
     Ejes3D ejes; // Se activara cuando definamos la clase de ejes
+    
+    
 
-    void actualizarLimites(float x, float y, float z ){ 
-        if (x < lim.minX) lim.minX = x; 
-        if (x > lim.maxX) lim.maxX = x;
-
-        if (y < lim.minY) lim.minY = y; 
-        if (y > lim.maxY) lim.maxY = y;
-
-        if (z < lim.minZ) lim.minZ = z; 
-        if (z > lim.maxZ) lim.maxZ = z;
-    }
 
 public:
     Grafica3D( ){ 
         // Inicializar limites para el auto-ajuste de escala
         lim.minX = lim.minY = lim.minZ = std::numeric_limits<float>::max();
         lim.maxX = lim.maxY = lim.maxZ = std::numeric_limits<float>::lowest();
+        // lim.minX = lim.minY = lim.minZ = -1;
+        // lim.maxX = lim.maxY = lim.maxZ = 1;
 
         camara.distanciaCamara = 100.0f;
     }
@@ -92,11 +86,15 @@ public:
 
 
     void draw(sf::RenderWindow& window, sf::RenderStates states, sf::Vector2f pSize) override {
-        dibujarEjes(window,states,pSize);
-        // 1. Dibujar Ejes y Rejilla (Pendiente de implementar en Auxiliares3D)
-        // ejes.draw(window, states, camara, lim, pSize);
 
-        // 2. Dibujar Series
+        // guardar el size y poscion de la camara
+        camara.actualizarBoundsGlobal(states, pSize);
+
+        // dibujar ejes (si estan activos)
+        dibujarEjes(window,states,pSize);
+
+
+        // Dibujar Series
         for( const auto& serie : gestor.lista ){ 
             if (serie.count < 2) continue;
 
@@ -143,6 +141,7 @@ public:
     }
 
     // Accesos para configuracion fina
+    Ejes3D& getEjes( ){  return ejes; }
     Camara3D& getCamara( ){  return camara; }
     GestorSeries& getGestor( ){  return gestor; }
 };

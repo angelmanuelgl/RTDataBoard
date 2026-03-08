@@ -12,7 +12,7 @@
 #include <vector>
 #include <deque>
 
-
+#include <dsv/core/Logger.hpp>
 
 namespace dsv{
 
@@ -36,6 +36,9 @@ struct Ejes3D {
     float grosor = 1.0f;
 
     // set Todos
+    void setLimites( float m, float M){
+        setLimites(m,M, m,M, m,M);
+    }
     void setLimites(float mx, float Mx, float my, float My, float mz, float Mz ){ 
         minX = mx; maxX = Mx;
         minY = my; maxY = My;
@@ -63,18 +66,31 @@ public:
     float zoom = 1.0f;
     float distanciaCamara = 50.0f;
     float sensibilidad = 0.4f;
+    // posicion
+    sf::FloatRect ultimoBoundsGlobal; 
+    bool ultimoBoundsGlobalActualizada = false;
+
+
+    // actualziar
+    void actualizarBoundsGlobal( sf::RenderStates states, sf::Vector2f pSize ){
+        if( ultimoBoundsGlobalActualizada ) return;
+        ultimoBoundsGlobalActualizada = true;
+        // sf::Vector2f posGlobal(states.transform.getMatrix()[12], states.transform.getMatrix()[13]);
+        sf::Vector2f posGlobal = states.transform.transformPoint(0, 0);
+        this->ultimoBoundsGlobal = sf::FloatRect(posGlobal, pSize);
+    }
 
     // mouse
     sf::Vector2i ultimaPosMouse;
     bool estaRotando = false;
 
-    void rotar(float dx, float dy) {
+    void rotar(float dx, float dy ){ 
         rotacionY += dx * sensibilidad; 
         rotacionX += dy * sensibilidad; 
 
-        // El "clamp" para no marear al usuario
-        if (rotacionX > 89.0f)  rotacionX = 89.0f;
-        if (rotacionX < -89.0f) rotacionX = -89.0f;
+        // limitr rotaciones para no marear al usuario
+        if( rotacionX > 89.0f)  rotacionX = 89.0f;
+        if( rotacionX < -89.0f) rotacionX = -89.0f;
     }
 
     // 3D -> 2d
@@ -100,7 +116,7 @@ public:
 
         // 3. Perspectiva
         float den = distanciaCamara - z2;
-        if (den < 0.5f) return sf::Vector2f(-10000.f, -10000.f); 
+        if( den < 0.5f) return sf::Vector2f(-10000.f, -10000.f); 
         
         float factorPersp = 1.0f / den;
         float escalaBase = (pSize.x < pSize.y ? pSize.x : pSize.y) * 0.5f;
@@ -113,21 +129,40 @@ public:
 
     //evento del mouse
     void gestionarEvento(const sf::Event& evento, const sf::RenderWindow& window){
-        // --- ROTACION CON EL MOUSE ---
-        if (evento.type == sf::Event::MouseButtonPressed) {
-            if (evento.mouseButton.button == sf::Mouse::Left) {
+        sf::Vector2i mousePosI = sf::Mouse::getPosition(window);
+        sf::Vector2f mousePos(static_cast<float>(mousePosI.x), static_cast<float>(mousePosI.y));
+        
+        // dejar de presionar
+        if( evento.type == sf::Event::MouseButtonReleased ){ 
+            if( evento.mouseButton.button == sf::Mouse::Left ){ 
+                estaRotando = false;
+            }
+        }
+
+        // DSV_LOG_INFO("evento detectado");
+        // Si el mouse no esta dentro de los bounds globales, no procesamos el evento
+        if( ultimoBoundsGlobalActualizada ){
+            // DSV_LOG_INFO("bounds globales actualizados");
+            if ( !ultimoBoundsGlobal.contains(mousePos) )  return; 
+            // DSV_LOG_INFO("evento dentro de limites bounds globales");
+
+        } else {
+            // DSV_LOG_WARN("bounds globales NO actualizados, procesando evento de todas formas");
+        }
+       
+        
+
+
+        // activar rotacion con click izquierdo
+        if( evento.type == sf::Event::MouseButtonPressed ){ 
+            if( evento.mouseButton.button == sf::Mouse::Left ){ 
                 estaRotando = true;
                 ultimaPosMouse = sf::Mouse::getPosition(window);
             }
         }
 
-        if (evento.type == sf::Event::MouseButtonReleased) {
-            if (evento.mouseButton.button == sf::Mouse::Left) {
-                estaRotando = false;
-            }
-        }
-
-        if (evento.type == sf::Event::MouseMoved && estaRotando) {
+        // moviendo el mouse
+        if( evento.type == sf::Event::MouseMoved && estaRotando ){ 
             sf::Vector2i posActual = sf::Mouse::getPosition(window);
             
             float dx = static_cast<float>(posActual.x - ultimaPosMouse.x);
@@ -138,11 +173,15 @@ public:
             ultimaPosMouse = posActual;
         }
 
-        // --- ZOOM CON EL SCROLL ---
-        if (evento.type == sf::Event::MouseWheelScrolled) {
-            if (evento.mouseWheelScroll.delta > 0) zoom *= 1.1f;
+        // zoom con la rueda del mouse
+        if( evento.type == sf::Event::MouseWheelScrolled ){ 
+            if( evento.mouseWheelScroll.delta > 0) zoom *= 1.1f;
             else zoom *= 0.9f;
         }
+
+
+        
+   
     }
 };
 
