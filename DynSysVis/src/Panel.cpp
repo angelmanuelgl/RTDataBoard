@@ -79,6 +79,11 @@ void Panel::setSize(double nx, double ny){
     elMarco.generar(size, radio, bgColor, extColor);
 }
 
+void Panel::setSizeAbsoluto(sf::Vector2f tamano) {
+    size = tamano;
+    elMarco.generar(size, radio, bgColor, extColor);
+}
+
 
 void Panel::setPosition(float x, float y) {
     pos_actual = {x, y};

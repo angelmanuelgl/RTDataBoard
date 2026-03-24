@@ -58,6 +58,7 @@ int main( ){
 
     /// GraficaTiempo
     auto guerreras    = tablero.add<dsv::GraficaTiempo>("guerreras", dsv::Color::rojo, "g", dsv::Color::rojo);
+    // guerreras -> agregarSerie("serie1", dsv::Color::rojo);
     auto recolectoras = tablero.add<dsv::GraficaTiempo>("recolectoras", dsv::Color::oro, "r", dsv::Color::oro);
     auto obreras      = tablero.add<dsv::GraficaTiempo>("obreras", dsv::Color::verde, "o", dsv::Color::verde);
     auto total = tablero.add<dsv::GraficaTiempo>("Poblaciones Total", dsv::Color::celeste, "t" );
@@ -133,7 +134,7 @@ int main( ){
             t += dt;
            
             // agregar datos a graficas
-            guerreras -> push_back(G, t);
+            guerreras -> push_back(G, t, "serie1");
             recolectoras -> push_back(R, t);
             obreras -> push_back(O, t);
             total -> push_back(O+G+R, t);

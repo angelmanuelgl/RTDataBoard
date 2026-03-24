@@ -15,6 +15,7 @@
 */
 #include "dsv/graphics2D/Graficas.hpp"
 
+#include "dsv/core/Logger.hpp"
 
 namespace dsv{
 /*  
@@ -69,20 +70,20 @@ void Serie2D::draw(sf::RenderWindow& window, sf::RenderStates states,
     // dibujar punto caveza y desvanezimiento
     if( cabeza ){
         float radioPunto = 3.5f;
-        sf::CircleShape cabeza(radioPunto);
+        sf::CircleShape shapeCabeza(radioPunto);
 
         // el ultimo guardado es el primeor de hasta delante
-        cabeza.setOrigin(radioPunto, radioPunto);
+        shapeCabeza.setOrigin(radioPunto, radioPunto);
         
         sf::Vector2f ultimoPunto = puntos.back();
 
-        cabeza.setPosition(mapearPunto(ultimoPunto) ) ;
-        cabeza.setFillColor(color);
+        shapeCabeza.setPosition(mapearPunto(ultimoPunto) ) ;
+        shapeCabeza.setFillColor(color);
 
         // borde blanco p
-        cabeza.setOutlineThickness(1.0f);
-        cabeza.setOutlineColor(sf::Color::White);
-        window.draw(cabeza, states);
+        shapeCabeza.setOutlineThickness(1.0f);
+        shapeCabeza.setOutlineColor(sf::Color::White);
+        window.draw(shapeCabeza, states);
     }
 }
 
@@ -143,6 +144,7 @@ void GraficaBase::push_back_Gen(sf::Vector2f p, std::string clave) {
 
     // creae la serie si no existe
     if( series.find(clave) == series.end() ){
+        DSV_LOG_INFO( "creado serie con clave " + clave + " ahora maxPoints es" + std::to_string( maxPoints) );
         series[clave] = Serie2D(clave, lineaResaltado, maxPoints);
     }
 
@@ -157,6 +159,7 @@ void GraficaBase::agregarSerie(std::string nombre, sf::Color color) {
     if( it != series.end() ){
         // Si ya existe, solo cambiamos el color (por si el usuario quiere cambiarlo en tiempo real)
         it->second.setColor(color); 
+        it->second.setMaxPoints(maxPoints); 
     } else {
         // Si es nueva, la creamos con los puntos maximos actuales de la gráfica
         series[nombre] = Serie2D(nombre, color, maxPoints);
@@ -344,8 +347,12 @@ GraficaTiempo::GraficaTiempo( sf::Color color)
     ponerDesvanecido(false, false);
     maxLimX = 20;// 20 segundos de largo
 
+
     // la grafica tiempos e encarga de borrarlos si apsa de cierot tiempo
     maxPoints = 1000000;
+
+    // la serie ya fue agregada peor queremos resetear el maxPoinsts
+    agregarSerie( seriePrincipal ,color);
 }
 
 
@@ -353,17 +360,18 @@ void GraficaTiempo::push_back(float val , std::string clave){
     
     std::string id = (clave == "") ? "default" : clave;
     
-    // obtenemos x / /  x es el tiempo (podira ser un contador o segundos)
-    float x = 0;
-    if (!series[id].vacia()) {
-        x = series[id].back().x + 1;
-    }
+    // // obtenemos x / /  x es el tiempo (podira ser un contador o segundos)
+    // float x = 0;
+    // if (!series[id].vacia()) {
+    //     x = series[id].back().x + 1;
+    // }
     
-    push_back_Gen({x, val}, id);
+    // push_back_Gen({x, val}, id);
 }
 
 void GraficaTiempo::push_back(float val , float t, std::string clave){
-    push_back_Gen({t, val}, clave);
+    std::string id = (clave == "") ? "default" : clave;
+    push_back_Gen({t, val}, id);
 }
 
 void GraficaTiempo::recalcularExtremos(void){

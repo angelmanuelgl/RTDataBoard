@@ -85,6 +85,7 @@ public:
  
     // posicionamiento 
     void setSize(double nx, double ny);
+    void setSizeAbsoluto(sf::Vector2f tamano);
     void setPosition(float x, float y);
     [[deprecated("Usa positionEnRejilla para un layout mas limpio")]]
     void positionAbsoluta(Ubicacion ubi);
