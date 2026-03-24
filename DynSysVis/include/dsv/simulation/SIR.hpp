@@ -38,11 +38,30 @@ struct SIR_Model {
 };
 
 struct SIR_Instance {
-    SIR_Model model;  // varias instancias peuden comaprtir modelo
+private:
+    //  modelo propio (por si no quiere compartir)
+    dsv::mod::SIR_Model localModel; 
+    
+    // puntero a modelo compartido
+    dsv::mod::SIR_Model* sharedModelPtr = nullptr;
+
+public:
+    dsv::mod::SIR_Model& getModel(){
+        return (sharedModelPtr != nullptr) ? *sharedModelPtr : localModel;
+    }
+    
+    // para compartir (Usa la dirección de memoria &)
+    void vincularModelo(dsv::mod::SIR_Model& externo) {
+        sharedModelPtr = &externo;
+    }
+    // para volver a ser independiente
+    void usarModeloPropio() {
+        sharedModelPtr = nullptr;
+    }
 
     std::array<float, SIR_Model::dim> state { 0.99f, 0.01f, 0.0f };
     float t = 0.0f;
-
+    
 };
 
 

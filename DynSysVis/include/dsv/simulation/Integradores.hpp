@@ -10,11 +10,11 @@ namespace sim {
     // EULER
     template<typename Instance>
     void E_step(Instance& sys, float dt) {
-        using Model = decltype(sys.model);
+        using Model = typename std::decay<decltype(sys.getModel())>::type;
         constexpr size_t d = Model::dim;
 
         std::array<float, d> a;
-        sys.model.drift(sys.state, sys.t, a); // Solo necesitamos la tendencia
+        sys.getModel().drift(sys.state, sys.t, a); // Solo necesitamos la tendencia
 
         for(size_t i = 0; i < d; ++i ){
             sys.state[i] += a[i] * dt;
@@ -26,14 +26,14 @@ namespace sim {
     //  Euler-Maruyama un ruido
     template<typename Instance>
     void EM_step_simple(Instance& sys, float dt) {
-        using Model = decltype(sys.model);
+        using Model = typename std::decay<decltype(sys.getModel())>::type;
         constexpr size_t d = Model::dim;
 
         std::array<float, d> a;
         std::array<float, d> g; // Vector de difusión en lugar de matriz
 
-        sys.model.drift(sys.state, sys.t, a);
-        sys.model.diffusion(sys.state, sys.t, g);
+        sys.getModel().drift(sys.state, sys.t, a);
+        sys.getModel().diffusion(sys.state, sys.t, g);
 
         static std::mt19937 gen(std::random_device{}());
         static std::normal_distribution<float> dist(0.0f, 1.0f);
@@ -49,7 +49,7 @@ namespace sim {
     template<typename Instance>
     void EM_step(Instance& sys, float dt)
     {
-        using Model = decltype(sys.model);
+        using Model = typename std::decay<decltype(sys.getModel())>::type;
 
         constexpr size_t d = Model::dim;
         constexpr size_t m = Model::noise_dim;
@@ -58,8 +58,8 @@ namespace sim {
         std::array<std::array<float, m>, d> B;
         std::array<float, m> dW;
 
-        sys.model.drift(sys.state, sys.t, a);
-        sys.model.diffusion(sys.state, sys.t, B);
+        sys.getModel().drift(sys.state, sys.t, a);
+        sys.getModel().diffusion(sys.state, sys.t, B);
 
         static std::mt19937 gen(std::random_device{}());
         static std::normal_distribution<float> dist(0.0f, 1.0f);
@@ -82,7 +82,7 @@ namespace sim {
     // GENERAL
     template<typename Instance>
     void step(Instance& sys, float dt) {
-        using Model = decltype(sys.model);
+        using Model = typename std::decay<decltype(sys.getModel())>::type;
         
         // dim = 0//  determinista
         if constexpr (Model::noise_dim == 0) {
@@ -102,7 +102,7 @@ namespace sim {
     // Runge-Kutta 4to Orden (RK4)
     template<typename Instance>
     void RK4_step(Instance& sys, float dt) {
-        using Model = decltype(sys.model);
+        using Model = typename std::decay<decltype(sys.getModel())>::type;
         constexpr size_t d = Model::dim;
 
         // Estructuras para las 4 etapas
@@ -113,19 +113,19 @@ namespace sim {
         float h2 = h / 2.0f;
 
         // k1 = f(t, x)
-        sys.model.drift(sys.state, sys.t, k1);
+        sys.getModel().drift(sys.state, sys.t, k1);
 
         // k2 = f(t + h/2, x + h/2 * k1)
         for(size_t i = 0; i < d; ++i) temp_state[i] = sys.state[i] + h2 * k1[i];
-        sys.model.drift(temp_state, sys.t + h2, k2);
+        sys.getModel().drift(temp_state, sys.t + h2, k2);
 
         // k3 = f(t + h/2, x + h/2 * k2)
         for(size_t i = 0; i < d; ++i) temp_state[i] = sys.state[i] + h2 * k2[i];
-        sys.model.drift(temp_state, sys.t + h2, k3);
+        sys.getModel().drift(temp_state, sys.t + h2, k3);
 
         // k4 = f(t + h, x + h * k3)
         for(size_t i = 0; i < d; ++i) temp_state[i] = sys.state[i] + h * k3[i];
-        sys.model.drift(temp_state, sys.t + h, k4);
+        sys.getModel().drift(temp_state, sys.t + h, k4);
 
         // actualizacion final: x = x + (h/6) * (k1 + 2k2 + 2k3 + k4)
         for(size_t i = 0; i < d; ++i) {

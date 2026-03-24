@@ -44,6 +44,10 @@ struct Lorenz_Model {
 struct Lorenz_Instance {
     Lorenz_Model model;
 
+    dsv::mod::Lorenz_Model& getModel() {
+        return model;
+    }
+
     std::array<float, Lorenz_Model::dim> state { 1.0f, 1.0f, 1.0f };
     float t = 0.0f;
 

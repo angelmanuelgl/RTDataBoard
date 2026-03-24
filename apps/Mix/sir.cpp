@@ -2,13 +2,12 @@
 #include <cmath>
 #include "DynSysVis.hpp"
 
-struct EntidadSIR {
-    dsv::mod::SIR_Instance sim; // Los datos puros de simulación
-    std::string id;             // Metadato visual
-    sf::Color color;            // Metadato visual
-};
-
 int main() {
+
+    // --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    // --- --- --- --- ---  PANELES Y VENTANA  --- --- --- --- ---
+    // --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
     dsv::Color::cargar("assets/config/colores.txt");
     sf::RenderWindow window;
     dsv::Sistema::inicializarVentana(window, "DynSysVis RT - 20 Simulaciones SIR");
@@ -55,21 +54,30 @@ int main() {
     tablero.setPanelDegradado(  sf::Color(30,30,40),  sf::Color(20,20,25));
     
 
-    // Inicializar 20 instancias
-    const int numSims = 20;
-    std::vector<dsv::mod::SIR_Instance> sims(numSims);
-    
+    // --- --- --- --- --- --- --- -- --- --- --- --- --- --- ---
+    // --- --- --- --- --- --- INICIALIZAR --- --- --- --- --- ---
+    // --- --- --- --- --- --- --- -- --- --- --- --- --- --- ---
 
+    // ---------- Inicializar 20 instancias -----------
+    const int numSims = 20;
+
+    dsv::mod::SIR_Model modeloSIR; 
+    modeloSIR.beta= 0.1f; modeloSIR.gamma= 0.01f; modeloSIR.ruido= 0.01f ; // infectados recuperados ruido
+    std::vector<dsv::mod::SIR_Instance> sims(numSims);
+
+
+    // inicializar modelo
+    for( int i = 0; i < numSims; i++ ){
+        sims[i].state = {200.0f, 10.0f, 0.0f}; // S=99, I=1, R=0
+        sims[i].vincularModelo(modeloSIR); // comaprtimos el modelo para todo
+    }
+
+
+    // (OPCIONAL) puedes borrar esto y sigue sirviendo, solo toma colores por defcto
+    // inicializar colores de cada serie
     for( int i = 0; i < numSims; i++ ){
         std::string id = "Sim" + std::to_string(i);
         sf::Color col = dsv::Color::Oceano(i, numSims);
-
-        if( i == numSims -1 ){
-            col = dsv::Color::rojo; // la primera simulacion en rojo para destacar
-            sims[i].model.ruido = 0.0f; // la primera simulacion sin ruido para destacar
-        }
-
-        sims[i].state = {200.0f, 10.0f, 0.0f}; // S=99, I=1, R=0
         
         for( auto fase : {faseIR,faseSI,faseRS })
             fase->agregarSerie(id, col);
@@ -77,13 +85,29 @@ int main() {
         tiempo->agregarSerie(id, col);
         fase3D.objeto.getGestor().agregarSerie(id, col);
 
-        if( i == numSims-1 ){
-            fase3D.objeto.getGestor().setGrosor(5.0f, id);
-            // fase3D.objeto.getGestor().setColor( dsv::Color::Magma() , id);
-            fase3D.objeto.getGestor().setColor( sf::Color(255,0,0) , id);
-        }
     }
 
+
+    // ---- ---- --- --- inicialziar instancia determinista --- --- ---
+    dsv::mod::SIR_Instance sd; // determinista
+    sd.getModel().beta = 0.1f;
+    sd.getModel().gamma = 0.01f;
+    sd.getModel().ruido = 0.0f;
+    sd.state = {200.0f, 10.0f, 0.0f};
+    // colores grosor, etc (OPCIONAL)
+    std::string id_det = "SimDeterminista";
+    sf::Color col(255,0,0);
+    for( auto fase : {faseIR,faseSI,faseRS })
+            fase->agregarSerie(id_det, col);
+    tiempo->agregarSerie(id_det, col);
+    fase3D.objeto.getGestor().agregarSerie(id_det, col);
+    fase3D.objeto.getGestor().setColor( sf::Color(255,0,0) , id_det);
+    fase3D.objeto.getGestor().setGrosor( 6.0f, id_det);
+
+
+    // --- --- --- --- --- --- --- -- --- --- --- --- --- --- ---
+    // --- --- --- --- --- --- SIMULACION --- --- --- --- --- ---
+    // --- --- --- --- --- --- --- -- --- --- --- --- --- --- ---
     sf::Clock clock;
     sf::Time accumulator = sf::Time::Zero;
     sf::Time ups = sf::seconds(0.066f);
@@ -94,27 +118,46 @@ int main() {
         sf::Event event;
         while(window.pollEvent(event)) {
             if(event.type == sf::Event::Closed) window.close();
-            if(event.type == sf::Event::KeyPressed){
+            // inicia
+            if(event.type == sf::Event::KeyPressed && !iniciado){
                 iniciado = true;
                 accumulator = sf::Time::Zero;
                 clock.restart();
             } 
+            // interactuar
+            if (event.type == sf::Event::KeyPressed) {
+                // Aumentar un valor (Ej: Volumen o Velocidad)
+                if (event.key.code == sf::Keyboard::Add || event.key.code == sf::Keyboard::Up) {
+                    modeloSIR.beta *= 1.1;
+                }
+
+                // Disminuir un valor
+                if (event.key.code == sf::Keyboard::Subtract || event.key.code == sf::Keyboard::Down) {
+                    modeloSIR.beta /= 1.1;
+                }
+
+                // Resetear a un valor default
+                if (event.key.code == sf::Keyboard::R) {
+                     modeloSIR.ruido = 0;
+                }
+
+            }
+            // la grafica 3d gestiona sus propios eventos
             fase3D->gestionarEvento(event, window);
         }
 
         // --- --- --- ACTUALIZAR DATOS DE SIMULACION --- --- ---
         accumulator += clock.restart();
         while(accumulator >= ups && iniciado) {
+            
             // actualizar cada  instancia            
             for( int i = 0; i < numSims; i++){
                 auto& s = sims[i];
-                std::string id = "Sim" + std::to_string(i);
-
-                //  integrador
                 dsv::sim::step(s, ups.asSeconds());
             }
-
-             // --- --- --- AGREGAR DATOS MAS RECIENTES --- --- ---
+            dsv::sim::step(sd, ups.asSeconds());
+            
+            // --- --- --- AGREGAR DATOS MAS RECIENTES --- --- ---
             for( int i = 0; i < numSims; i++){
                 auto& s = sims[i];
                 std::string id = "Sim" + std::to_string(i);
@@ -127,7 +170,14 @@ int main() {
                 tiempo->push_back(s.state[1], s.t, id);
                 fase3D.objeto.getGestor().push_back( {s.state[0], s.state[1], s.state[2]}, id);
             }
+            // Llenar graficas del determinista
+            faseSI->push_back(sd.state[0], sd.state[1], id_det);
+            faseIR->push_back(sd.state[1], sd.state[2], id_det);
+            faseRS->push_back(sd.state[2], sd.state[0], id_det);
 
+            tiempo->push_back(sd.state[1], sd.t, id_det);
+            fase3D.objeto.getGestor().push_back( {sd.state[0], sd.state[1], sd.state[2]}, id_det);
+            
             accumulator -= ups;
         }
         
