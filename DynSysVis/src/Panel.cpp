@@ -31,7 +31,6 @@ Panel::Panel(sf::RenderWindow& window_,  const std::string& tituloPanel, sf::Col
     // asignar color en automatcio
     bgColor=sf::Color(30,30,30);
     
-
     // poner fuente por defecto 
     yafuenteCargada = false;
     if( tituloPanel != "" ){
@@ -41,7 +40,10 @@ Panel::Panel(sf::RenderWindow& window_,  const std::string& tituloPanel, sf::Col
     
     
     //  se espera que el panel se use llamando el tablero asi que esto es de emergencia
+    // el tableor lo pociciona y le dice cuanto medir
     setSize(2,2);
+    setPosition(0,0);
+
     elMarco.generar(size, radio, bgColor, extColor);
 
     // tecnicamente con llamar al consturctor no basta hay que llamar a 
@@ -50,12 +52,27 @@ Panel::Panel(sf::RenderWindow& window_,  const std::string& tituloPanel, sf::Col
     
 }
 void Panel::setDegradado(sf::Color colorTop, sf::Color colorBot) {
-    this->bgColor = colorTop;     // Guardamos el principal por si acaso
-    this->bgBotColor = colorBot;  // Necesitarás este nuevo miembro en el .hpp
+    this->bgColor = colorTop;     // principal
+    this->bgBotColor = colorBot;  // degrado hacia abajo
     
     // El color de borde (extColor) se mantiene igual
-    elMarco.generar(size, radio, colorTop, colorBot, extColor);
+    elMarco.generar(size, radio, bgColor, bgBotColor, extColor, borde);
 }
+void Panel::setColorFondo(sf::Color color ){
+    setDegradado(color,color);
+}
+void Panel::setBorderWidth(float grosor) {
+    this->borde = grosor;
+    elMarco.generar(size, radio, bgColor, bgBotColor, extColor, borde);
+}
+void Panel::setRadio(float r) {
+    this->radio = r;
+    elMarco.generar(size, radio, bgColor, bgBotColor, extColor, borde);
+}
+
+// ---- ---- --- --- --- --- --- --- --- --- 
+// ---- ---- --- posicionamiento --- --- --- 
+// ---- ---- --- --- --- --- --- --- --- --- 
 
 void Panel::setSize(double nx, double ny){
     // --- calcular el tamano ---
@@ -84,7 +101,6 @@ void Panel::setSizeAbsoluto(sf::Vector2f tamano) {
     elMarco.generar(size, radio, bgColor, extColor);
 }
 
-
 void Panel::setPosition(float x, float y) {
     pos_actual = {x, y};
     mytransform = sf::Transform::Identity;
@@ -92,9 +108,9 @@ void Panel::setPosition(float x, float y) {
 }
 
 void Panel::configurarMedidas( float r, float esp, float margen){ 
-    radio = r; 
-    espaciado = esp; 
-    margen = margenVentana;  
+    this->radio = r; 
+    this->espaciado = esp; 
+    this->margenVentana = margen;  
 }
 
 void Panel::positionAbsoluta(Ubicacion ubi){
@@ -184,6 +200,10 @@ void Panel::draw(void) {
     sf::Vector2f sizeContenido = size;
     sf::Vector2f posContenido = pos_actual;
 
+
+    // recorte
+    aplicarRecorte(window, posContenido, sizeContenido);
+
     // si tiene titulo, reservar espacio
     if( titulo ){   
         titulo->draw(window, states);
@@ -197,12 +217,11 @@ void Panel::draw(void) {
 
     // si tiene contenido se dibujar
     if( contenido ){
-        // recorte
-        aplicarRecorte(window, posContenido, sizeContenido);
-        contenido->draw(window, states, sizeContenido);
-        glDisable(GL_SCISSOR_TEST);
+        contenido->draw(window, states, sizeContenido); 
     } 
 
+    // temrianr recorde
+    glDisable(GL_SCISSOR_TEST);
     elMarco.drawCont(window, mytransform); 
 }
 
@@ -223,6 +242,7 @@ void Panel::ponerTitulo(const std::string& texto, const sf::Font& fuente){
 /*
     como intertactua el panel con sus elementoss
 */
+
 void Panel::setContenido(std::unique_ptr<Objeto> nuevoContenido ){
     contenido = std::move(nuevoContenido);
 }

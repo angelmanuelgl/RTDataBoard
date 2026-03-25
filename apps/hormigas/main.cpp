@@ -29,6 +29,62 @@ int main( ){
     sf::RenderWindow window;
     dsv::Sistema::inicializarVentana(window, "DynSysVis RT - Colonia de Hormigas");
 
+
+
+    // --- paneles flotantes ----
+    dsv::PanelFlotante miPanel(
+        window, 
+        "Menu Opciones", 
+        dsv::HandleOrientacion::Horizontal,
+        dsv::DespliegueDir::Abajo,
+        sf::Color::Cyan         
+    );
+    miPanel.setDegradado( sf::Color(30,60,40,200),  sf::Color(20,20,25, 200) ); 
+    miPanel.positionAbsoluta( dsv::Ubicacion::ArribaIzq );
+
+    dsv::PanelFlotante miPanel2(
+        window, 
+        "Menu Tiempo", 
+        dsv::HandleOrientacion::Horizontal,
+        dsv::DespliegueDir::Abajo,
+        dsv::Color::rojo          
+    );
+    miPanel2.setDegradado( sf::Color(60,30,40,200),  sf::Color(20,20,25, 200) ); 
+    miPanel2.positionAbsoluta( dsv::Ubicacion::ArribaCentro );
+
+    dsv::PanelFlotante miPanel3(
+        window, 
+        "otro", 
+        dsv::HandleOrientacion::Horizontal,
+        dsv::DespliegueDir::Abajo,
+        dsv::Color::azul_noche      
+    );
+    miPanel3.setDegradado( sf::Color(50,30,40,200),  sf::Color(20,20,25, 200) ); 
+    miPanel3.positionAbsoluta( dsv::Ubicacion::ArribaDer );
+
+    
+    dsv::PanelFlotante miPanel4(
+        window, 
+        "info", 
+        dsv::HandleOrientacion::Vertical,
+        dsv::DespliegueDir::Der,
+        dsv::Color::morado      
+    );
+    miPanel4.setDegradado( sf::Color(50,30,60,200),  sf::Color(20,20,25, 200) ); 
+    miPanel4.positionAbsoluta( dsv::Ubicacion::CentroIzq );
+
+    
+    dsv::PanelFlotante miPanel5(
+        window, 
+        "grafica", 
+        dsv::HandleOrientacion::Vertical,
+        dsv::DespliegueDir::Izq,
+        dsv::Color::naranja      
+    );
+    miPanel5.setDegradado( sf::Color(45,60,40,200),  sf::Color(20,20,25, 200) ); 
+    miPanel5.positionAbsoluta( dsv::Ubicacion::CentroDer );
+
+
     // --- tablero con datos --- DSV
     dsv::Layout miLayout = {
         "fa1 .   tri tri g g",
@@ -61,7 +117,7 @@ int main( ){
     // guerreras -> agregarSerie("serie1", dsv::Color::rojo);
     auto recolectoras = tablero.add<dsv::GraficaTiempo>("recolectoras", dsv::Color::oro, "r", dsv::Color::oro);
     auto obreras      = tablero.add<dsv::GraficaTiempo>("obreras", dsv::Color::verde, "o", dsv::Color::verde);
-    auto total = tablero.add<dsv::GraficaTiempo>("Poblaciones Total", dsv::Color::celeste, "t" );
+    auto total = tablero.add<dsv::GraficaTiempo>("Poblaciones Totalde la totaldiad toal de hormigas totales e", dsv::Color::celeste, "t" );
 
     /// EspacioFase2D
     auto OG = tablero.add<dsv::EspacioFase2D>("Espacio Fase (O, G)", dsv::Color::azul, "fa1", dsv::Color::azul );
@@ -82,12 +138,6 @@ int main( ){
 
     
     /// acceder a metodos especificos de los objetos de los paneles
-    // guerreras -> configurarMaxPoints(5000);
-    // recolectoras -> configurarMaxPoints(5000);
-    // obreras -> configurarMaxPoints(5000);
-    // triple -> configurarMaxPoints(5000);
-    // total -> configurarMaxPoints(5000);
-
     // OG -> configurarMaxPoints(5000);
     // OR -> configurarMaxPoints(5000);  
     // RG -> configurarMaxPoints(5000);
@@ -105,12 +155,19 @@ int main( ){
         // --- --- --- ---  eventos --- --- --- --- 
         sf::Event event;
         while( window.pollEvent(event) ){
-            if (event.type == sf::Event::Closed) window.close();
-            if (event.type == sf::Event::KeyPressed){
+            if( event.type == sf::Event::Closed) window.close();
+
+            if( event.type == sf::Event::KeyPressed && !iniciado){
                 clock.restart(); 
                 accumulator = sf::Time::Zero;
                 iniciado = true;
             }
+
+            miPanel.gestionarEvento(event);
+            miPanel2.gestionarEvento(event);
+            miPanel3.gestionarEvento(event);
+            miPanel4.gestionarEvento(event);
+            miPanel5.gestionarEvento(event);
         }
 
         // --- --- --- ---  Simulacion --- --- --- --- 
@@ -152,7 +209,14 @@ int main( ){
             accumulator -= ups;
         }
         // --- --- --- ---  Renderizado --- --- --- --- 
+        // paneles de layout
         tablero.draw();
+        // paneles flotantes
+        miPanel.draw();
+        miPanel2.draw();
+        miPanel3.draw();
+        miPanel4.draw();
+        miPanel5.draw();
         window.display();
     }
 

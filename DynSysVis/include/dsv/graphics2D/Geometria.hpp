@@ -59,8 +59,8 @@ namespace dsv{
         sf::VertexArray background;  
         sf::VertexArray contorno;
     public:
-        void generar(sf::Vector2f size, float radio, sf::Color bgColor, sf::Color extColor);
-        void generar(sf::Vector2f size, float radio, sf::Color colorTop, sf::Color colorBot, sf::Color extColor);
+        void generar(sf::Vector2f size, float radio, sf::Color bgColor, sf::Color extColor, float grosor=2.0f);
+        void generar(sf::Vector2f size, float radio, sf::Color colorTop, sf::Color colorBot, sf::Color extColor, float grosor=2.0f);
 
         void draw( sf::RenderWindow& window, const sf::Transform& transform);
         void drawBack( sf::RenderWindow& window, const sf::Transform& transform);

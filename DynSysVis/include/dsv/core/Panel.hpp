@@ -61,10 +61,11 @@ private:
     
     // poscionar //todo: hacer una clase que contenga todos los paneles // para tener medidas iguales para todos
     float espaciado = 15.f;
-    float margenVentana = 20.f;
+    float margenVentana = 38.f;
 
     // para el recntauglo
-    float radio = 20.0f;
+    float radio = 10.0f;
+    float borde = 2.0f;
     sf::Vector2f size;
     sf::Color extColor;
     sf::Color bgColor;
@@ -78,18 +79,21 @@ private:
 public:
     Panel(sf::RenderWindow& window_, 
                 const std::string& tituloPanel ="", 
-                sf::Color extColor = sf::Color::White); // color de fondo
+                sf::Color extColor = sf::Color::White); // color de borde
 
-    void configurarMedidas( float r, float esp, float margen);
+    void configurarMedidas(  float r, float esp, float margen);
+    void setColorFondo(sf::Color color);
     void setDegradado(sf::Color colorTop, sf::Color colorBot);
- 
+    void setBorderWidth(float grosor);    
+    void setRadio(float r);
+
     // posicionamiento 
     void setSize(double nx, double ny);
     void setSizeAbsoluto(sf::Vector2f tamano);
     void setPosition(float x, float y);
-    [[deprecated("Usa positionEnRejilla para un layout mas limpio")]]
+    // [[deprecated("Usa positionEnRejilla para un layout mas limpio")]]
     void positionAbsoluta(Ubicacion ubi);
-    [[deprecated("Usa positionEnRejilla para un layout mas limpio")]]
+    // [[deprecated("Usa positionEnRejilla para un layout mas limpio")]]
     void positionRelativa(RelativoA rel, const Panel& other);
     
 

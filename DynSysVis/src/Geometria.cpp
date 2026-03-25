@@ -115,13 +115,13 @@ void generarBorde(sf::VertexArray& vertex_array, sf::Vector2f position, sf::Vect
 
 */
 
-void RectanguloRedondeado::generar(sf::Vector2f size, float radio, sf::Color bgColor, sf::Color extColor){
+void RectanguloRedondeado::generar(sf::Vector2f size, float radio, sf::Color bgColor, sf::Color extColor, float grosor){
     background = generarRectanguloRelleno(size, radio, 40, bgColor);
-    generarBorde(contorno, {0.f, 0.f}, size, radio, 2.0f, 40, extColor);
+    generarBorde(contorno, {0.f, 0.f}, size, radio, grosor, 40, extColor);
 }
-void RectanguloRedondeado::generar(sf::Vector2f size, float radio, sf::Color colorTop, sf::Color colorBot, sf::Color extColor){
+void RectanguloRedondeado::generar(sf::Vector2f size, float radio, sf::Color colorTop, sf::Color colorBot, sf::Color extColor, float grosor){
     background = generarRectanguloRellenoDegradado(size, radio, 40, colorTop, colorBot);
-    generarBorde(contorno, {0.f, 0.f}, size, radio, 2.0f, 40, extColor);
+    generarBorde(contorno, {0.f, 0.f}, size, radio, grosor, 40, extColor);
 }
 
 void RectanguloRedondeado::draw( sf::RenderWindow& window, const sf::Transform& transform){
