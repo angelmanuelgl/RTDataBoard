@@ -38,6 +38,8 @@ struct Malthus_Model {
 };
 
 
+
+
 // ──────────────────────────────────────────────────────────────────────────────
 // Logístico (Verhulst) — Crecimiento con Capacidad de Carga
 //

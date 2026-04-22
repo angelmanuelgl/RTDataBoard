@@ -152,6 +152,52 @@ struct StochasticLotkaVolterra_Model {
 };
 
 
+// ──────────────────────────────────────────────────────────────────────────────
+// Nacimientos -> Obreras -> Recolectoras ->  Guerreras -> Muertes
+//                                        -> Muertes
+//
+// ver mas sobre ete modelo en:
+// https://www.jovenesenlaciencia.ugto.mx/index.php/jovenesenlaciencia/article/view/4873
+// ──────────────────────────────────────────────────────────────────────────────
+struct AntColony_Model {
+    static constexpr size_t dim       = 3;
+    static constexpr size_t noise_dim = 0;
+
+    // Parámetros del modelo (con tus valores por defecto)
+    float bO      = 0.05f;
+    float betaOG  = 4.0f;
+    float betaGR  = 2.5f;
+    float betaRG  = 1.2f;
+    float kG      = 50.0f;
+    float kR      = 50.0f;
+    float dG      = 0.005f;
+    float dR      = 0.005f;
+
+    enum { O, G, R }; // Mapeo de índices
+
+    void drift(const std::array<float, dim>& x,
+               float /*t*/,
+               std::array<float, dim>& out) const 
+    {
+        // x[O] = Obreras, x[G] = Guerreras, x[R] = Recolectoras
+        
+        // dO/dt = bO*O - (betaOG / (kG + G))*O
+        out[O] = (bO * x[O]) - (betaOG / (kG + x[G])) * x[O];
+
+        // dR/dt = (betaGR / (kR + R)) * G - (betaRG / (kG + G)) * R - (dR * R)
+        out[R] = (betaGR / (kR + x[R])) * x[G] 
+                 - (betaRG / (kG + x[G])) * x[R] 
+                 - (dR * x[R]);
+                 
+        // dG/dt = (betaOG / (kG + G)) * O - (betaGR / (kR + R)) * G - (dG * G) + (betaRG / (kG + G)) * R
+        out[G] = (betaOG / (kG + x[G])) * x[O] 
+                 - (betaGR / (kR + x[R])) * x[G] 
+                 - (dG * x[G]) 
+                 + (betaRG / (kG + x[G])) * x[R];
+
+        
+    }
+};
 
 
 } // namespace mod

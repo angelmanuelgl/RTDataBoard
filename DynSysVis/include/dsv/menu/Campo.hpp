@@ -134,7 +134,7 @@ public:
             strVal = std::to_string(static_cast<int>(*valor));
         } else {
             char buf[16];
-            std::snprintf(buf, sizeof(buf), "%.2f", *valor);
+            std::snprintf(buf, sizeof(buf), "%.3f", *valor);
             strVal = buf;
         }
 

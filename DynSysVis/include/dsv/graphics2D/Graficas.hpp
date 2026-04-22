@@ -116,7 +116,7 @@ protected:
     bool desvanece, cabeza;
 
     Limites lim;
-    bool autoEscalado = true;
+    
     // ejes
     std::string nombreEjeX, nombreEjeY;
     std::string unidadEjeX, unidadEjeY;
@@ -127,6 +127,12 @@ protected:
  
 
    
+    // --- --- --- tipos de escalado --- --- 
+    enum { TIPOestatico, TIPOautoEscalado, TIPOautoSeguimiento }; // Mapeo de índices
+    int estadoEES  = TIPOestatico;
+    bool limitesPersonalizadosIngresados = false;
+    bool YaSeActualizaronLimites = false; // la primera vez que se actualizan es dieferente porque antes no hay datos, asi que se ponen esos limites, si no se expanden
+
 
 public:
     GraficaBase(unsigned int maxPts, sf::Color color);
@@ -151,18 +157,40 @@ public:
     void configurarEjes(std::string nx, std::string ux, std::string ny, std::string uy) { nombreEjeX = nx; unidadEjeX = ux; nombreEjeY = ny; unidadEjeY = uy; }
     void configurarMarcas(int mx, int my) { numMarcasX = mx; numMarcasY = my; }
 
-    void configurarLimites( float mx, float MX, float my, float MY, bool autoEsc = false ){  
+    void configurarLimites( float mx, float MX, float my, float MY){  
         lim = {mx,MX,my,MY}; 
-        autoEscalado = autoEsc;  
+        limitesPersonalizadosIngresados = true;
     }
+   
 
     void ponerSombreado( bool s, bool eje = true ){ sombreado = s; sombreadoAlEje = eje;}
     void ponerDesvanecido( bool s, bool c ){ desvanece = s, cabeza =c;}
+    void ponerDesvanecido( bool s){ desvanece = s;}
     void ponerCabeza( bool c ){ cabeza =c;}
     
     // dibujar
     void dibujarContenido(sf::RenderWindow& window, sf::RenderStates states, float paddingL, float offsetTop, float graphWidth, float graphHeight);
     void draw(sf::RenderWindow& window, sf::RenderStates states, sf::Vector2f pSize);
+
+
+    // --- --- --- tipos de escalado --- --- 
+    void activarAutoescalado( bool s = true ){ 
+        if(s) estadoEES = TIPOautoEscalado;
+        else estadoEES = TIPOestatico;
+      
+    }
+    void activarSeguimiento( bool s = true){ 
+        if(s) estadoEES = TIPOautoSeguimiento;
+        else estadoEES = TIPOestatico;
+    }
+
+    bool esEstatico(){ 
+        bool r = (estadoEES == TIPOestatico);
+        return r;
+    }
+    bool esEscalado(){ return (estadoEES == TIPOautoEscalado);}
+    bool esSegumiento(){ return (estadoEES == TIPOautoSeguimiento);}
+
 };
 
 /*  
@@ -184,26 +212,26 @@ public:
     void push_back(float val, std::string clave ="");
     void push_back(float val , float t, std::string clave ="");
     
-    void configurarMaxLim(float maxlx){ maxLimX = maxlx; };
+    void configurarVentanaTiempo(float maxlx){ maxLimX = maxlx; };
+    void configurarLimitesY( float my, float MY){  
+        lim = {0,0,my,MY}; 
+        activarAutoescalado();
+    }
 };
 
 class EspacioFase2D : public GraficaBase {
 // diferencias entre seguimiento y autoescalado: 
 // el auto escalado recalcula los limites de las series y ajusta la vista para que siempre se vean
 // AUTOESCALADO: expande limites, pero no los centra, asi que si las series se mueven a un lado, la grafica se va a ese lado, pero siempre mostrando todo el rango de las series
-//  SEGUIMIENTO: ajusta los limites para que siempre esten centrados en las series, asi que si las series se mueven a un lado, la grafica se va a ese lado pero siempre centrada en las series, y con un margen extra para que no se mueva tan rapido
-
+// SEGUIMIENTO: ajusta los limites para que siempre esten centrados en las series, asi que si las series se mueven a un lado, la grafica se va a ese lado pero siempre centrada en las series, y con un margen extra para que no se mueva tan rapido
+// ESTATICO 
 private:
-    bool seguimiento = false;
-
-    bool YaSeActualizaronLimites = false; // la primera vez que se actualizan es dieferente porque antes no hay datos, asi que se ponen esos limites, si no se expanden
-
+    
 public:
     EspacioFase2D(sf::Color color = sf::Color::Blue );
     // --- datos ---
     void recalcularExtremos(void) override;
     void push_back(float x, float y, std::string clave ="");
-    void activarSeguimiento(bool s){ seguimiento = s; autoEscalado = true;}
 };
 
 

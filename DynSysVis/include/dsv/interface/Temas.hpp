@@ -32,47 +32,160 @@
 
 namespace dsv {
 
+
 namespace Color{
-    const sf::Color rojo(255, 100, 130, 255);
-    const sf::Color naranja(255, 160, 60, 255);
-    const sf::Color amarillo(255, 235, 100, 255);
-    const sf::Color verde(100, 255, 170, 255);
-    const sf::Color aqua(80, 230, 210, 255);     // Nuevo
-    const sf::Color celeste(130, 245, 255, 255);
-    const sf::Color cian(100, 210, 255, 255);
-    const sf::Color azul(110, 170, 255, 255);
-    const sf::Color violeta(160, 110, 255, 255);
-    const sf::Color morado(190, 130, 255, 255);
-    const sf::Color rosa(255, 80, 140, 255);
-    const sf::Color marron(160, 110, 90, 255);    // Nuevo
+    // --- ROJOS Y VINOS ---
+    // --- ROJOS, VINOS Y ROSAS ---
+    const sf::Color rojo(255, 82, 82);
+    const sf::Color rojo_l(255, 150, 150);
+    const sf::Color rojo_d(180, 40, 40);
+    const sf::Color rojo_dd(35, 20, 20);
 
-    // --- Acento / Claros (Desaturados/Pastel) ---
-    const sf::Color rojo_l(214, 122, 131, 255);
-    const sf::Color naranja_l(235, 165, 145, 255);
-    const sf::Color amarillo_l(255, 225, 160, 255);
-    const sf::Color verde_l(185, 212, 160, 255);
-    const sf::Color aqua_l(160, 210, 200, 255);
-    const sf::Color cian_l(155, 210, 225, 255);
-    const sf::Color azul_l(150, 180, 210, 255);
-    const sf::Color morado_l(205, 165, 195, 255);
-    const sf::Color rosa_l(255, 150, 180, 255);   // Ajustado para ser más claro
-    const sf::Color marron_l(190, 155, 140, 255);
+    const sf::Color vino(140, 20, 50);
+    const sf::Color vino_l(190, 80, 100);
+    const sf::Color vino_d(80, 10, 30);
+    const sf::Color vino_dd(25, 15, 18);
 
-    // --- Escala de Grises y Neutros ---
-    const sf::Color blanco(255, 255, 255, 255);
+    const sf::Color rosa(255, 120, 180);
+    const sf::Color rosa_l(255, 180, 210);
+    const sf::Color rosa_d(200, 80, 130);
+    const sf::Color rosa_dd(35, 20, 28);
+
+    const sf::Color rosaMexicano(230, 0, 125);
+    const sf::Color rosaMexicano_l(255, 100, 180);
+    const sf::Color rosaMexicano_d(160, 0, 90);
+    const sf::Color rosaMexicano_dd(30, 15, 22);
+
+    const sf::Color magenta(220, 50, 220);
+    const sf::Color magenta_l(240, 150, 240);
+    const sf::Color magenta_d(150, 30, 150);
+    const sf::Color magenta_dd(28, 18, 28);
+
+    // --- NARANJAS, AMARILLOS Y OROS ---
+    const sf::Color naranja(255, 150, 50);
+    const sf::Color naranja_l(255, 200, 130);
+    const sf::Color naranja_d(200, 100, 20);
+    const sf::Color naranja_dd(35, 25, 15);
+
+    const sf::Color amarillo(255, 220, 60);
+    const sf::Color amarillo_l(255, 240, 150);
+    const sf::Color amarillo_d(210, 170, 20);
+    const sf::Color amarillo_dd(32, 30, 15);
+
+    const sf::Color oro(215, 170, 70);
+    const sf::Color oro_l(240, 210, 130);
+    const sf::Color oro_d(160, 120, 40);
+    const sf::Color oro_dd(28, 25, 18);
+
+    const sf::Color ocre(190, 130, 50);
+    const sf::Color ocre_l(220, 170, 100);
+    const sf::Color ocre_d(140, 90, 30);
+    const sf::Color ocre_dd(25, 22, 15);
+
+    // --- VERDES Y AQUA ---
+    const sf::Color verde(100, 255, 170);
+    const sf::Color verde_l(180, 255, 210);
+    const sf::Color verde_d(60, 190, 120);
+    const sf::Color verde_dd(20, 40, 30);
+
+    const sf::Color verdeLimon(180, 255, 50);
+    const sf::Color verdeLimon_l(220, 255, 140);
+    const sf::Color verdeLimon_d(130, 200, 20);
+    const sf::Color verdeLimon_dd(25, 32, 18);
+
+    const sf::Color aqua(80, 230, 210);
+    const sf::Color aqua_l(170, 245, 235);
+    const sf::Color aqua_d(50, 170, 155);
+    const sf::Color aqua_dd(15, 35, 33);
+
+    // --- AZULES Y CIAN ---
+    const sf::Color cian(50, 230, 255);
+    const sf::Color cian_l(160, 245, 255);
+    const sf::Color cian_d(30, 160, 190);
+    const sf::Color cian_dd(15, 30, 35);
+
+    const sf::Color celeste(130, 245, 255);
+    const sf::Color celeste_l(200, 250, 255);
+    const sf::Color celeste_d(80, 190, 220);
+    const sf::Color celeste_dd(20, 35, 40);
+
+    const sf::Color azul(70, 130, 255);
+    const sf::Color azul_l(160, 190, 255);
+    const sf::Color azul_d(40, 80, 200);
+    const sf::Color azul_dd(18, 22, 35);
+
+    const sf::Color azulMar(30, 80, 160);
+    const sf::Color azulMar_l(100, 140, 210);
+    const sf::Color azulMar_d(15, 50, 110);
+    const sf::Color azulMar_dd(12, 18, 28);
+
+    // --- VIOLETAS Y MORADOS ---
+    const sf::Color violeta(160, 110, 255);
+    const sf::Color violeta_l(200, 170, 255);
+    const sf::Color violeta_d(110, 60, 200);
+    const sf::Color violeta_dd(25, 20, 35);
+
+    const sf::Color morado(120, 60, 230);
+    const sf::Color morado_l(170, 130, 255);
+    const sf::Color morado_d(80, 30, 160);
+    const sf::Color morado_dd(20, 15, 28);
+
+    // --- TIERRAS Y METALES ---
+    const sf::Color marron(110, 70, 50);
+    const sf::Color marron_l(160, 120, 100);
+    const sf::Color marron_d(70, 40, 30);
+    const sf::Color marron_dd(22, 18, 15);
+
+    const sf::Color cafe(80, 50, 40);
+    const sf::Color cafe_l(130, 95, 80);
+    const sf::Color cafe_d(50, 30, 25);
+    const sf::Color cafe_dd(18, 14, 12);
+
+    const sf::Color cobre(185, 100, 60);
+    const sf::Color cobre_l(220, 150, 120);
+    const sf::Color cobre_d(130, 60, 30);
+    const sf::Color cobre_dd(28, 20, 15);
+
+    const sf::Color plata(170, 175, 185);
+    const sf::Color plata_l(210, 215, 225);
+    const sf::Color plata_d(120, 125, 135);
+    const sf::Color plata_dd(40, 42, 45);
+
+    // --- ESCALA DE GRISES ---
+    const sf::Color blanco(245, 245, 245);
+    const sf::Color blanco_l(255, 255, 255);
+    const sf::Color blanco_d(200, 200, 200);
+    const sf::Color blanco_dd(60, 60, 65);
+
+    const sf::Color gris(130, 135, 145);
+    const sf::Color gris_l(180, 185, 195);
+    const sf::Color gris_d(80, 85, 95);
+    const sf::Color gris_dd(35, 37, 40);
+
+    const sf::Color negro(20, 20, 25);
+    const sf::Color negro_l(50, 50, 60);
+    const sf::Color negro_d(10, 10, 12);
+    const sf::Color negro_dd(0, 0, 0);
+
     const sf::Color gris_claro(167, 169, 171, 255); // grey_40
-    const sf::Color gris(135, 137, 140, 255);       // grey_56
+    // const sf::Color gris(135, 137, 140, 255);       // grey_56
     const sf::Color gris_oscuro(105, 106, 108, 255); // grey_72
-    const sf::Color fondo_panel(69, 69, 71, 255);    // dark_grey
-    const sf::Color fondo_oscuro(30, 31, 34, 255);   // Tono típico de dashboard
-    const sf::Color negro(0, 0, 0, 255);
+
+
 
     // --- Variantes Extra para Gráficos (Muted Colors) ---
     const sf::Color verde_bosque(75, 140, 100, 255);
     const sf::Color azul_noche(60, 80, 120, 255);
     const sf::Color terracota(180, 90, 80, 255);
-    const sf::Color oro(215, 170, 70, 255);
+
+
+    // --- paneles ---
+    const sf::Color fondo_panel(69, 69, 71, 255);    // dark_grey
+    const sf::Color panelUp(40,40,50);
+    const sf::Color panelDown(20,20,25); 
+
     
+
     // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
     // --- --- --- --- ---  DEGRADADOS POR INDICE  --- --- --- --- ---
     // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -306,11 +419,19 @@ namespace Color{
             
         } 
     }
+
+} // end Color
+} // end dsv
+
+
+inline sf::Color operator%(sf::Color color, int alpha) {
+    color.a = static_cast<uint8_t>(alpha);
+    return color;
 }
 
 
-
  // --- configurar ventana ---
+ namespace dsv {
  namespace Sistema {
     // Estructura para devolver los parametros configurados
     struct ConfigVentana {

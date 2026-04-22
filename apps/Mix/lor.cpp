@@ -3,6 +3,10 @@
 #include "DynSysVis.hpp"
 
 
+
+using Lorenz_Instance = dsv::mod::Instance< dsv::mod::Lorenz_Model >;
+
+
 int main() {
     dsv::Color::cargar("assets/config/colores.txt");
     sf::RenderWindow window;
@@ -56,7 +60,7 @@ int main() {
 
     
     // --- --- ---  Inicializar 20 instancias --- --- --- 
-    const int numSims = 500;
+    const int numSims = 5;
     std::vector<dsv::mod::Lorenz_Instance> sims(numSims);
     
     // rangos aleatorios

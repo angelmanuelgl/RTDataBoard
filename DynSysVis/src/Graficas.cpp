@@ -234,7 +234,9 @@ void GraficaBase::dibujarContenido(sf::RenderWindow& window, sf::RenderStates st
                                   float paddingL, float offsetTop, float graphWidth, float graphHeight) {
     if (series.empty()) return;
 
-    if( autoEscalado )  recalcularExtremos();
+    if( !esEstatico() || !limitesPersonalizadosIngresados ){
+        recalcularExtremos();
+    }  
 
     auto mapearPunto = [&](sf::Vector2f p) {
         float xNorm = (p.x - lim.minX) / (lim.maxX - lim.minX);
@@ -353,6 +355,8 @@ GraficaTiempo::GraficaTiempo( sf::Color color)
 
     // la serie ya fue agregada peor queremos resetear el maxPoinsts
     agregarSerie( seriePrincipal ,color);
+
+    activarAutoescalado();
 }
 
 
@@ -376,7 +380,7 @@ void GraficaTiempo::push_back(float val , float t, std::string clave){
 
 void GraficaTiempo::recalcularExtremos(void){
     if( series.empty() ) return;
-
+    
 
     bool primerSerie = true;
     for( auto const& [id, serie] : series ){
@@ -497,7 +501,7 @@ void EspacioFase2D::recalcularExtremos(void){
     float mx = 0.05 * (limAllSeries.maxX - limAllSeries.minX); // margen
     
     // poco mas de margen
-    if( seguimiento ){
+    if( esSegumiento() ){
         mx *= 2;
         my *= 2;
     }
@@ -512,13 +516,16 @@ void EspacioFase2D::recalcularExtremos(void){
     // para evitar que se expandan desde el 0,0 
     // queremos que se expandan desde donde  esten lod datos
     if( !YaSeActualizaronLimites ){
-        lim = limAllSeries;
         YaSeActualizaronLimites = true;
-        return;
+        if( !limitesPersonalizadosIngresados ){
+            lim = limAllSeries;
+            return;
+        }  
+        
     }
 
     // si se ajusta siempre
-    if( seguimiento ) lim = limAllSeries;
+    if( esSegumiento() ) lim = limAllSeries;
     // si solo crece
     else{
         if( limAllSeries.minX < lim.minX) lim.minX = limAllSeries.minX;
