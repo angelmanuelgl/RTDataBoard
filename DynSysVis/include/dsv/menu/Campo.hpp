@@ -596,7 +596,8 @@ public:
         sf::Text t;
         t.setFont(fuente);
         t.setCharacterSize(12u);
-        t.setFillColor(sf::Color::White);
+        // t.setFillColor(sf::Color::White);
+        t.setFillColor(colorBorde);
         t.setString(label);
         auto bounds = t.getLocalBounds();
         t.setPosition(

@@ -2,7 +2,6 @@
 #define ECOLOGY_HPP
 
 #include <array>
-#include <cstddef>
 
 // Sistema de dos ODEs acopladas no lineales.
 //
@@ -15,49 +14,6 @@
 namespace dsv {
 namespace mod {
 
-
-// ──────────────────────────────────────────────────────────────────────────────
-// WrightFisher — Difusión Genética (Deriva Génica)
-//
-//   dx = β(x) dt + √(x(1-x)/N) dW
-//
-// Modela la frecuencia x ∈ [0,1] de un alelo en una población de tamaño N.
-// La difusión √(x(1-x)/N) viene de la varianza binomial de muestreo:
-//   - Se anula en los bordes x=0 y x=1 (estados absorbentes: fijación o extinción).
-//   - Es máxima en x=0.5.
-//
-// β(x): presión de selección o mutación. Aquí β=0 → deriva pura.
-//   β > 0: selección positiva del alelo
-//   β < 0: selección negativa
-//
-// Parámetro   Fenómeno
-//   N         Tamaño efectivo de la población (N pequeño → ruido genético fuerte)
-//   beta      Presión de selección lineal: β(x) = s·x·(1-x) es la elección canónica
-// ──────────────────────────────────────────────────────────────────────────────
-struct WrightFisher_Model {
-
-    static constexpr size_t dim       = 1;
-    static constexpr size_t noise_dim = 1;
-
-    float N    = 200.0f; // tamaño efectivo de la población (N > 0)
-    float beta = 0.0f;   // presión de selección/mutación (0 = deriva pura)
-
-    void drift(const std::array<float, dim>& x,
-               float /*t*/,
-               std::array<float, dim>& out) const
-    {
-        out[0] = beta * x[0] * (1.0f - x[0]); // selección; 0 si beta=0
-    }
-
-    void diffusion(const std::array<float, dim>& x,
-                   float /*t*/,
-                   std::array<float, dim>& out) const
-    {
-        // Clampeado en 0 para evitar sqrt de negativo por error numérico
-        float p = std::max(0.0f, std::min(1.0f, x[0]));
-        out[0] = std::sqrt(p * (1.0f - p) / N);
-    }
-};
 
 
 // ──────────────────────────────────────────────────────────────────────────────

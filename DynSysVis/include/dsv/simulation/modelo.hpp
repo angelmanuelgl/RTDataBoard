@@ -34,7 +34,7 @@ struct ModelRef {
     bool es_propio() const          { return std::holds_alternative<Model>(storage); }
 };
 
-// Instance generica: reemplaza SIR_Instance, Lorenz_Instance, ORG_Instance, etc.
+// Instance genérica: reemplaza SIR_Instance, Lorenz_Instance, ORG_Instance, etc.
 template<typename Model>
 struct Instance {
     using state_t = std::array<float, Model::dim>;
