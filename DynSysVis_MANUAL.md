@@ -249,7 +249,7 @@ struct Your_Stocastic_Model {
     }
 
     // si tienes parte estocastica  noise_dim >= 1 ej  noise_dim =2
-        void diffusion(const std::array<float, dim>& x,
+    void diffusion(const std::array<float, dim>& x,
                    float /*t*/,
                    std::array<std::array<float, noise_dim>, dim>& out) const
     {
